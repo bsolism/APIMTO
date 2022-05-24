@@ -6,6 +6,7 @@ namespace ApiMto.Application.Interfaces
     public interface ICameraApplication
     {
         Task<IEnumerable<Camera>> Get();
+        Task<IEnumerable<Camera>> GetOnly();
         Task<Camera> FindById(int id);
         Task<ObjectResult> Add(Camera camera);
         Task<ObjectResult> Update(int id, Camera camera);

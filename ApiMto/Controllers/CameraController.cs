@@ -20,6 +20,12 @@ namespace ApiMto.Controllers
 
             return uow.CameraApplication.Get();
         }
+        [HttpGet("only")]
+        public Task<IEnumerable<Camera>> GetOnly()
+        {
+
+            return uow.CameraApplication.GetOnly();
+        }
 
         [HttpGet("{id}")]
         public Task<Camera> GetById(int id)

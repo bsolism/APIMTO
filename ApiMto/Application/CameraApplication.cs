@@ -22,6 +22,10 @@ namespace ApiMto.Application
         {
             return await dc.Cameras.Include(x=> x.Brand).Include(x=> x.Server).ToListAsync();
         }
+        public async Task<IEnumerable<Camera>> GetOnly()
+        {
+            return await dc.Cameras.ToListAsync();
+        }
         public async Task<Camera> FindById(int id)
         {
             var data = await dc.Cameras.FirstOrDefaultAsync(x=> x.Id== id);
