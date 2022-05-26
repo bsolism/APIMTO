@@ -3,6 +3,7 @@ using ApiMto.Context;
 using ApiMto.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.Serialization;
 
 namespace ApiMto.Application
 {
@@ -16,7 +17,7 @@ namespace ApiMto.Application
         }
         public async Task<IEnumerable<Server>> Get()
         {
-            return await dc.Servers.Include(x=> x.Brand).ToListAsync();
+            return await dc.Servers.Include(x => x.Cameras).Include(x => x.Brand).ToListAsync();
         }
         public async Task<Server> FindById(int id)
         {

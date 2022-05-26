@@ -20,7 +20,7 @@ namespace ApiMto.Application
 
         public async Task<IEnumerable<Agencia>> Get()
         {
-            return await dc.Agencias.ToListAsync();
+            return await dc.Agencias.Include(x => x.Servers).ThenInclude(x=> x.Cameras).ToListAsync();
         }
         public async Task<Agencia> FindById(int id)
         {

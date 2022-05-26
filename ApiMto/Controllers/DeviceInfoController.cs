@@ -19,6 +19,12 @@ namespace ApiMto.Controllers
             credCache.Add(new Uri(uri), "Digest", new NetworkCredential(cred.Name, cred.Password));
             HttpClient client = new HttpClient(new HttpClientHandler { Credentials = credCache });
             var response = await client.GetAsync(uri);
+            if (!response.IsSuccessStatusCode)
+            {
+                credCache.Add(new Uri(uri), "Basic", new NetworkCredential(cred.Name, cred.Password));
+                client = new HttpClient(new HttpClientHandler { Credentials = credCache });
+                response = await client.GetAsync(uri);
+            }
             return new ContentResult
             {
                 ContentType = "application/xml",
