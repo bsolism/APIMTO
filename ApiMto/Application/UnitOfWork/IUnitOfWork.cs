@@ -8,6 +8,8 @@ namespace ApiMto.Application.UnitOfWork
         IServerApplication ServerApplication { get; }
         IAgenciaApplication AgenciaApplication { get; }
         IBrandApplication BrandApplication { get; }
+        IDeviceApplication DeviceApplication { get; }
+        ILogApplication LogApplication { get; }
 
     }
 }

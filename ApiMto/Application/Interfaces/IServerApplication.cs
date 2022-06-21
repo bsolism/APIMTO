@@ -1,4 +1,5 @@
-﻿using ApiMto.Models;
+﻿using ApiMto.Dto;
+using ApiMto.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiMto.Application.Interfaces
@@ -7,7 +8,7 @@ namespace ApiMto.Application.Interfaces
     {
         Task<IEnumerable<Server>> Get();
         Task<Server> FindById(int id);
-        Task<ObjectResult> Add(Server server);
+        Task<ObjectResult> Add(ServerDto serverDto);
         Task<ObjectResult> Update(int id, Server server);
     }
 }

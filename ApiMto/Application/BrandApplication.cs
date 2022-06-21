@@ -20,7 +20,7 @@ namespace ApiMto.Application
 
         public async Task<IEnumerable<Brand>> Get()
         {
-            return await dc.Brands.ToListAsync();
+            return await dc.Brands.OrderBy(x=> x.name).ToListAsync();
         }
         public async Task<Brand> FindById(int id)
         {

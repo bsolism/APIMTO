@@ -9,6 +9,8 @@ namespace ApiMto.Models
         public string Nombre { get; set; }
         public string Ciudad { get; set; }
         public string Direccion { get; set; }
-        public List<Server>? Servers { get; set; }
+        public List<SrvAg>? SrvAg { get; set; }
+        public List<Camera>? Cameras { get; set; }
+       
     }
 }

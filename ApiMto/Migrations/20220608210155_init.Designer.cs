@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiMto.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220429185124_Init2")]
-    partial class Init2
+    [Migration("20220608210155_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -74,60 +74,52 @@ namespace ApiMto.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("AgenciaId")
+                        .HasColumnType("int");
+
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DateBuys")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateInstallation")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("DeviceDescription")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(MAX)");
 
                     b.Property<string>("DeviceId")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(MAX)");
+
+                    b.Property<DateTime>("FechaCompra")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaInstalacion")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("FirmwareVersion")
-                        .HasColumnType("text");
-
-                    b.Property<string>("IdPatchPanel")
-                        .HasColumnType("text");
-
-                    b.Property<string>("IdSwitch")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(MAX)");
 
                     b.Property<string>("IpAddress")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(MAX)");
 
                     b.Property<bool>("IsGoodCondition")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("LocationConnection")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Mac")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(MAX)");
 
                     b.Property<string>("Model")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(MAX)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(MAX)");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(MAX)");
+
+                    b.Property<string>("PatchPanel")
+                        .HasColumnType("nvarchar(MAX)");
 
                     b.Property<int?>("PortPatchPanel")
                         .HasColumnType("int");
@@ -137,20 +129,33 @@ namespace ApiMto.Migrations
 
                     b.Property<string>("SerialNumber")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(MAX)");
 
                     b.Property<int>("ServerId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Switch")
+                        .HasColumnType("nvarchar(MAX)");
+
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(MAX)");
+
+                    b.Property<string>("UbicacionConexion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(MAX)");
+
+                    b.Property<string>("UbicaciónFisica")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(MAX)");
 
                     b.Property<string>("User")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(MAX)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AgenciaId");
 
                     b.HasIndex("BrandId");
 
@@ -167,79 +172,89 @@ namespace ApiMto.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("AgenciaId")
+                    b.Property<int?>("AgenciaId")
                         .HasColumnType("int");
 
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CameraAvailable")
+                    b.Property<int>("CanalesIP")
                         .HasColumnType("int");
 
-                    b.Property<int>("CameraCapacity")
+                    b.Property<int>("CapacidadSata")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DateBuys")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateInstallation")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("CapacidadSataInstalado")
+                        .HasColumnType("int");
 
                     b.Property<string>("DeviceId")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(MAX)");
 
                     b.Property<int>("EngravedDays")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("FechaCompra")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaInstalacion")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("FirmwareVersion")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(MAX)");
 
                     b.Property<string>("IpAddress")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(MAX)");
 
                     b.Property<string>("Mac")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(MAX)");
 
-                    b.Property<string>("Model")
+                    b.Property<string>("Modelo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(MAX)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(MAX)");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(MAX)");
+
+                    b.Property<int>("PortAnalogo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PortIpPoe")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Sata")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SataInstalado")
+                        .HasColumnType("int");
 
                     b.Property<string>("SerialNumber")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Storage")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("StorageAvailable")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(MAX)");
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(MAX)");
+
+                    b.Property<string>("Ubicacion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(MAX)");
 
                     b.Property<string>("User")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(MAX)");
 
                     b.Property<bool>("isGoodCondition")
                         .HasColumnType("bit");
+
+                    b.Property<string>("nota")
+                        .HasColumnType("nvarchar(MAX)");
 
                     b.HasKey("Id");
 
@@ -250,8 +265,37 @@ namespace ApiMto.Migrations
                     b.ToTable("Server", "dbo");
                 });
 
+            modelBuilder.Entity("ApiMto.Models.SrvAg", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("AgenciaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ServerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AgenciaId");
+
+                    b.HasIndex("ServerId");
+
+                    b.ToTable("SrvAgs");
+                });
+
             modelBuilder.Entity("ApiMto.Models.Camera", b =>
                 {
+                    b.HasOne("ApiMto.Models.Agencia", "Agencia")
+                        .WithMany()
+                        .HasForeignKey("AgenciaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ApiMto.Models.Brand", "Brand")
                         .WithMany("Cameras")
                         .HasForeignKey("BrandId")
@@ -264,6 +308,8 @@ namespace ApiMto.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.Navigation("Agencia");
+
                     b.Navigation("Brand");
 
                     b.Navigation("Server");
@@ -271,11 +317,9 @@ namespace ApiMto.Migrations
 
             modelBuilder.Entity("ApiMto.Models.Server", b =>
                 {
-                    b.HasOne("ApiMto.Models.Agencia", "Agencia")
+                    b.HasOne("ApiMto.Models.Agencia", null)
                         .WithMany("Servers")
-                        .HasForeignKey("AgenciaId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .HasForeignKey("AgenciaId");
 
                     b.HasOne("ApiMto.Models.Brand", "Brand")
                         .WithMany("Servers")
@@ -283,9 +327,26 @@ namespace ApiMto.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.Navigation("Brand");
+                });
+
+            modelBuilder.Entity("ApiMto.Models.SrvAg", b =>
+                {
+                    b.HasOne("ApiMto.Models.Agencia", "Agencia")
+                        .WithMany()
+                        .HasForeignKey("AgenciaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ApiMto.Models.Server", "Server")
+                        .WithMany()
+                        .HasForeignKey("ServerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Agencia");
 
-                    b.Navigation("Brand");
+                    b.Navigation("Server");
                 });
 
             modelBuilder.Entity("ApiMto.Models.Agencia", b =>

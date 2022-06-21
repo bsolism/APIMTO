@@ -1,18 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
+﻿using ApiMto.Models;
 
-namespace ApiMto.Models
+namespace ApiMto.Dto
 {
-    public class Server
+    public class ServerDto
     {
-        [Key]
         public int Id { get; set; }
         public string Nombre { get; set; }
+        public int agenciaId { get; set; }
         public string User { get; set; }
         public string Password { get; set; }
         public string Ubicacion { get; set; }
         public string Type { get; set; }
-        //public string Brand { get; set; }
         public string Modelo { get; set; }
         public string Mac { get; set; }
         public string? DeviceId { get; set; }
@@ -31,13 +29,8 @@ namespace ApiMto.Models
         public string? nota { get; set; }
         public DateTime FechaInstalacion { get; set; }
         public DateTime FechaCompra { get; set; }
-        public int BrandId {get; set; }
+        public int BrandId { get; set; }
         public Brand? Brand { get; set; }
-        
         public List<Camera>? Cameras { get; set; }
-        [IgnoreDataMember]
-        public List<SrvAg>? srvAgs { get; set; }
-
-
     }
 }

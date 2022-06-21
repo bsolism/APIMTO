@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace ApiMto.Models
 {
@@ -9,10 +10,10 @@ namespace ApiMto.Models
         public string Name { get; set; }
         public string User { get; set; }
         public string Password { get; set; }
-        public string Location { get; set; }
-        public string LocationConnection { get; set; }
-        public string? IdPatchPanel { get; set; }
-        public string? IdSwitch { get; set; }
+        public string UbicacionFisica { get; set; }
+        public string UbicacionConexion { get; set; }
+        public string? PatchPanel { get; set; }
+        public string? Switch { get; set; }
         public int? PortPatchPanel { get; set; }
         public int? PortSwitch { get; set; }
         public string Type { get; set; }
@@ -24,11 +25,15 @@ namespace ApiMto.Models
         public string SerialNumber { get; set; }
         public string? FirmwareVersion { get; set; }
         public bool IsGoodCondition { get; set; }
-        public DateTime DateInstallation { get; set; }
-        public DateTime DateBuys { get; set; }
+        public DateTime FechaInstalacion{ get; set; }
+        public DateTime FechaCompra { get; set; }
+        public string? Nota { get; set; }
         public int BrandId { get; set; }
         public Brand? Brand { get; set; }
         public int ServerId { get; set; }
         public Server? Server { get; set; }
+        public int AgenciaId { get; set; }
+        [IgnoreDataMember]
+        public Agencia? Agencia { get; set; }
     }
 }

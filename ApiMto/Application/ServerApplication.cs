@@ -1,6 +1,8 @@
 ﻿using ApiMto.Application.Interfaces;
 using ApiMto.Context;
+using ApiMto.Dto;
 using ApiMto.Models;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.Serialization;
@@ -10,10 +12,12 @@ namespace ApiMto.Application
     public class ServerApplication : IServerApplication
     {
         private readonly DataContext dc;
+        private readonly IMapper mapper;
 
-        public ServerApplication(DataContext dc)
+        public ServerApplication(DataContext dc, IMapper mapper)
         {
             this.dc = dc;
+            this.mapper = mapper;
         }
         public async Task<IEnumerable<Server>> Get()
         {
@@ -37,13 +41,24 @@ namespace ApiMto.Application
             }
             return null;
         }
-        public async Task<ObjectResult> Add(Server server)
+        public async Task<ObjectResult> Add(ServerDto serverDto)
         {
+            var server = mapper.Map<Server>(serverDto);
+           
             var find = FindBySerial(server);
+
             if (find.Result == null)
             { 
                 dc.Servers.Add(server);
-                await dc.SaveChangesAsync();            
+                await dc.SaveChangesAsync();
+                var srvAg = new SrvAg
+                {
+                    AgenciaId = serverDto.agenciaId,
+                    ServerId = server.Id
+                };
+                dc.SrvAgs.Add(srvAg);
+                await dc.SaveChangesAsync();
+
                 return new ObjectResult(server);
             }
             return new ObjectResult("Server Already") { StatusCode = 500 };

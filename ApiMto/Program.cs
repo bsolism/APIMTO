@@ -3,6 +3,7 @@ using ApiMto.Domain.UnitOfWork;
 using ApiMto.Context;
 
 var builder = WebApplication.CreateBuilder(args);
+
 //builder.WebHost.ConfigureKestrel(options => options.Listen(System.Net.IPAddress.Parse("130.1.102.8"), 5003));
 
 // Add services to the container.
@@ -19,6 +20,7 @@ builder.Services.AddMvc().AddNewtonsoftJson(option => option.SerializerSettings.
 builder.Services.AddScoped<DataContext>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUnitOfWorkDomain, UnitOfWorkDomain>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
