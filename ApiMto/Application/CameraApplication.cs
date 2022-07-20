@@ -35,6 +35,15 @@ namespace ApiMto.Application
             }
             return null;
         }
+        public async Task<Camera> FindByChannel(int id, int serverId)
+        {
+            var data = await dc.Cameras.FirstOrDefaultAsync(x => x.PortChannel == id && x.ServerId== serverId );
+            if (data != null)
+            {
+                return data;
+            }
+            return null;
+        }
         public async Task<Camera> FindBySerial(Camera camera)
         {
             var data = await dc.Cameras.FirstOrDefaultAsync(x => x.SerialNumber == camera.SerialNumber);

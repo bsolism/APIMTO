@@ -16,6 +16,7 @@ namespace ApiMto.Models
         public string? Switch { get; set; }
         public int? PortPatchPanel { get; set; }
         public int? PortSwitch { get; set; }
+        public int? PortChannel { get; set; }
         public string Type { get; set; }
         public string Model { get; set; }
         public string IpAddress { get; set; }

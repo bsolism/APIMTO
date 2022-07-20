@@ -20,7 +20,7 @@ namespace ApiMto.Application.UnitOfWork
         public ICameraApplication CameraApplication => 
             new CameraApplication(dc, uowd);
         public IServerApplication ServerApplication =>
-            new ServerApplication(dc, mapper);
+            new ServerApplication(dc, mapper, uowd);
         public IAgenciaApplication AgenciaApplication =>
            new AgenciaApplication(dc, uowd);
         public IBrandApplication BrandApplication =>
@@ -29,5 +29,11 @@ namespace ApiMto.Application.UnitOfWork
             new DeviceApplication();
         public ILogApplication LogApplication =>
           new LogApplication(dc, uowd);
+        public ILogServerApplication LogServerApplication =>
+         new LogServerApplication(dc, uowd);
+        public IDataSheetApplication DataSheetApplication =>
+        new DataSheetApplication(dc);
+        public IEventoApplication EventoApplication =>
+        new EventoApplication(dc);
     }
 }

@@ -10,6 +10,9 @@ namespace ApiMto.Application.UnitOfWork
         IBrandApplication BrandApplication { get; }
         IDeviceApplication DeviceApplication { get; }
         ILogApplication LogApplication { get; }
+        ILogServerApplication LogServerApplication { get; }
+        IDataSheetApplication DataSheetApplication { get; }
+        IEventoApplication EventoApplication { get; }
 
     }
 }

@@ -5,5 +5,6 @@ namespace ApiMto.Domain.UnitOfWork
     public interface IUnitOfWorkDomain
     {
         ICameraDomain CameraDomain { get; }
+        IHelperDomain HelperDomain { get; }
     }
 }

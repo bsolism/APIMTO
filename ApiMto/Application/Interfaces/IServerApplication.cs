@@ -9,6 +9,7 @@ namespace ApiMto.Application.Interfaces
         Task<IEnumerable<Server>> Get();
         Task<Server> FindById(int id);
         Task<ObjectResult> Add(ServerDto serverDto);
+        Task<ObjectResult> AddFile(ServerDataSheetDto sdsd);
         Task<ObjectResult> Update(int id, Server server);
     }
 }

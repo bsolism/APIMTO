@@ -4,6 +4,7 @@ using ApiMto.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiMto.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220621224710_Log-Server")]
+    partial class LogServer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,9 +124,6 @@ namespace ApiMto.Migrations
                     b.Property<string>("PatchPanel")
                         .HasColumnType("nvarchar(MAX)");
 
-                    b.Property<int?>("PortChannel")
-                        .HasColumnType("int");
-
                     b.Property<int?>("PortPatchPanel")
                         .HasColumnType("int");
 
@@ -166,33 +165,6 @@ namespace ApiMto.Migrations
                     b.HasIndex("ServerId");
 
                     b.ToTable("Camera", "dbo");
-                });
-
-            modelBuilder.Entity("ApiMto.Models.Evento", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("CameraId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Comment")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getdate()");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CameraId");
-
-                    b.ToTable("Evento", "dbo");
                 });
 
             modelBuilder.Entity("ApiMto.Models.Log", b =>
@@ -355,28 +327,6 @@ namespace ApiMto.Migrations
                     b.ToTable("Server", "dbo");
                 });
 
-            modelBuilder.Entity("ApiMto.Models.ServerDataSheet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("DataSheetName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ServerId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ServerId");
-
-                    b.ToTable("ServerDataSheets");
-                });
-
             modelBuilder.Entity("ApiMto.Models.SrvAg", b =>
                 {
                     b.Property<int>("Id")
@@ -444,17 +394,6 @@ namespace ApiMto.Migrations
                     b.Navigation("Server");
                 });
 
-            modelBuilder.Entity("ApiMto.Models.Evento", b =>
-                {
-                    b.HasOne("ApiMto.Models.Camera", "Camera")
-                        .WithMany()
-                        .HasForeignKey("CameraId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Camera");
-                });
-
             modelBuilder.Entity("ApiMto.Models.Log", b =>
                 {
                     b.HasOne("ApiMto.Models.Camera", "Camera")
@@ -502,17 +441,6 @@ namespace ApiMto.Migrations
                         .IsRequired();
 
                     b.Navigation("Brand");
-                });
-
-            modelBuilder.Entity("ApiMto.Models.ServerDataSheet", b =>
-                {
-                    b.HasOne("ApiMto.Models.Server", "Server")
-                        .WithMany()
-                        .HasForeignKey("ServerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Server");
                 });
 
             modelBuilder.Entity("ApiMto.Models.SrvAg", b =>

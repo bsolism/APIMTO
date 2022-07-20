@@ -37,7 +37,17 @@ namespace ApiMto.Controllers
             }
             return Ok(data.Value);
         }
-       
+        [HttpPost("file")]
+        public async Task<IActionResult> AddFile([FromForm] ServerDataSheetDto serverDataSheetDto)
+        {
+            var data = await uow.ServerApplication.AddFile(serverDataSheetDto);
+            if (data.StatusCode == 500)
+            {
+                return BadRequest(data.Value);
+            }
+            return Ok(data.Value);
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Server server)
         {

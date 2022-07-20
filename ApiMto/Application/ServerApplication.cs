@@ -1,5 +1,6 @@
 ﻿using ApiMto.Application.Interfaces;
 using ApiMto.Context;
+using ApiMto.Domain.UnitOfWork;
 using ApiMto.Dto;
 using ApiMto.Models;
 using AutoMapper;
@@ -13,11 +14,13 @@ namespace ApiMto.Application
     {
         private readonly DataContext dc;
         private readonly IMapper mapper;
+        private readonly IUnitOfWorkDomain unitOf;
 
-        public ServerApplication(DataContext dc, IMapper mapper)
+        public ServerApplication(DataContext dc, IMapper mapper, IUnitOfWorkDomain unitOf)
         {
             this.dc = dc;
             this.mapper = mapper;
+            this.unitOf = unitOf;
         }
         public async Task<IEnumerable<Server>> Get()
         {
@@ -25,7 +28,7 @@ namespace ApiMto.Application
         }
         public async Task<Server> FindById(int id)
         {
-            var pet = await dc.Servers.FirstOrDefaultAsync(x => x.Id == id);
+            var pet = await dc.Servers.Include(x => x.Cameras).FirstOrDefaultAsync(x => x.Id == id);
             if (pet != null)
             {
                 return pet;
@@ -44,11 +47,11 @@ namespace ApiMto.Application
         public async Task<ObjectResult> Add(ServerDto serverDto)
         {
             var server = mapper.Map<Server>(serverDto);
-           
+
             var find = FindBySerial(server);
 
             if (find.Result == null)
-            { 
+            {
                 dc.Servers.Add(server);
                 await dc.SaveChangesAsync();
                 var srvAg = new SrvAg
@@ -63,6 +66,20 @@ namespace ApiMto.Application
             }
             return new ObjectResult("Server Already") { StatusCode = 500 };
 
+        }
+        public async Task<ObjectResult> AddFile(ServerDataSheetDto sdsd)
+        {
+            if (sdsd.File != null)
+            {
+                var file = unitOf.HelperDomain.UploadFilePdf(sdsd.File);
+                var serverDataSheet = new ServerDataSheet { DataSheetName = file, ServerId = sdsd.ServerId };
+                dc.ServerDataSheets.Add(serverDataSheet);
+                await dc.SaveChangesAsync();
+
+            }
+
+
+            return new ObjectResult(sdsd);
         }
         public async Task<ObjectResult> Update(int id, Server server)
         {

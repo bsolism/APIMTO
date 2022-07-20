@@ -30,8 +30,14 @@ namespace ApiMto.Controllers
         [HttpGet("{id}")]
         public Task<Camera> GetById(int id)
         {
-            var pet = uow.CameraApplication.FindById(id);
-            return pet;
+            var data = uow.CameraApplication.FindById(id);
+            return data;
+        }
+        [HttpGet("channel/{id}/server/{serverId}")]
+        public Task<Camera> GetByChannel(int id, int serverId)
+        {
+            var data = uow.CameraApplication.FindByChannel(id, serverId);
+            return data;
         }
         [HttpPost]
         public async Task<IActionResult> Add(Camera camera)

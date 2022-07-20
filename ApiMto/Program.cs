@@ -1,6 +1,8 @@
 using ApiMto.Application.UnitOfWork;
 using ApiMto.Domain.UnitOfWork;
 using ApiMto.Context;
+using System.Text.Json.Serialization;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,11 @@ builder.Services.AddControllers(options =>
     options.JsonSerializerOptions.PropertyNamingPolicy = null;
 });*/
 builder.Services.AddMvc().AddNewtonsoftJson(option => option.SerializerSettings.ReferenceLoopHandling= Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+builder.Services.AddControllers().AddJsonOptions(option =>
+{
+    option.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+
+});
 builder.Services.AddScoped<DataContext>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUnitOfWorkDomain, UnitOfWorkDomain>();
@@ -26,6 +33,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+IWebHostEnvironment env = builder.Environment;
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -39,6 +47,12 @@ app.UseCors(x=>x
 .SetIsOriginAllowed(origin=> true)
 .AllowCredentials()
 );
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(env.WebRootPath, "DataSheet")),
+    RequestPath = "/pdf/datasheet"
+});
 
 app.UseHttpsRedirection();
 

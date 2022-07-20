@@ -20,51 +20,19 @@ namespace ApiMto.Controllers
         public async Task<IActionResult> HikvisionCapabilities(Credentials credential)
         {
             var uri = "http://" + credential.IpAddress + "/ISAPI/Streaming/channels/101";
-            var credCache = new CredentialCache();
-            credCache.Add(new Uri(uri), "Digest", new NetworkCredential(credential.Name, credential.Password));
-            HttpClient client = new HttpClient(new HttpClientHandler { Credentials = credCache });
-            var response = await client.GetAsync(uri);
+            var response = await uow.DeviceApplication.GetDevice(uri, credential.Name, credential.Password);
             if (response == null) return NotFound("No se estableció conexión");
-
-            if (!response.IsSuccessStatusCode)
-            {
-                credCache.Add(new Uri(uri), "Basic", new NetworkCredential(credential.Name, credential.Password));
-                client = new HttpClient(new HttpClientHandler { Credentials = credCache });
-                response = await client.GetAsync(uri);
-                if (response.ReasonPhrase.Equals("Unauthorized")) return new ContentResult { Content = "User / Password Incorrect", StatusCode = 401 };
-            }
-            return new ContentResult
-            {
-                ContentType = "application/xml",
-                Content = await response.Content.ReadAsStringAsync(),
-                StatusCode = 200
-
-            };
+            return response;
         }
         [HttpPost("time")]
         [Produces("application/xml")]
         public async Task<IActionResult> HikvisionInfo(Credentials credential)
         {
             var uri = "http://" + credential.IpAddress + "/ISAPI/System/time";
-            var credCache = new CredentialCache();
-            credCache.Add(new Uri(uri), "Digest", new NetworkCredential(credential.Name, credential.Password));
-            HttpClient client = new HttpClient(new HttpClientHandler { Credentials = credCache });
-            var response = await client.GetAsync(uri);
+            var response = await uow.DeviceApplication.GetDevice(uri, credential.Name, credential.Password);
             if (response == null) return NotFound("No se estableció conexión");
-            if (response.ReasonPhrase.Equals("Unauthorized")) return new ContentResult { Content = "User / Password Incorrect", StatusCode = 401 };
-            if (!response.IsSuccessStatusCode)
-            {
-                credCache.Add(new Uri(uri), "Basic", new NetworkCredential(credential.Name, credential.Password));
-                client = new HttpClient(new HttpClientHandler { Credentials = credCache });
-                response = await client.GetAsync(uri);
-            }
-            return new ContentResult
-            {
-                ContentType = "application/xml",
-                Content = await response.Content.ReadAsStringAsync(),
-                StatusCode = 200
+            return response;
 
-            };
         }
         [HttpPut("time")]
         [Produces("application/xml")]
@@ -99,6 +67,41 @@ namespace ApiMto.Controllers
             return await uow.DeviceApplication.PutMic(mic.IpAddress, mic.Name, mic.Password, content);
 
 
+        }
+        [HttpPut("info")]
+        [Produces("application/xml")]
+        public async Task<IActionResult> updateInfo(InfoNameDto info)
+        {
+            string xml = "<?xml version='1.0' encoding='UTF - 8' ?>" +
+                "<DeviceInfo version='1.0' xmlns='http://www.isapi.org/ver20/XMLSchema'>" +
+            "<deviceName>"+info.NameDevice+"</deviceName> " +
+                "</DeviceInfo>" ;
+            var uri = "http://" + info.IpAddress + "/ISAPI/System/deviceInfo";
+            XDocument xd = XDocument.Parse(xml);
+            HttpContent content = new StringContent(xml.ToString(), Encoding.UTF8, "application/xml");
+            return await uow.DeviceApplication.Update(uri, info.Name, info.Password, content);
+
+
+        }
+        [HttpPost("channels")]
+        [Produces("application/xml")]
+        public async Task<IActionResult> HikvisionStatusChannel(Credentials credential)
+        {
+            var uri = "http://" + credential.IpAddress + "/ISAPI/ContentMgmt/InputProxy/channels/status";
+
+            var response = await uow.DeviceApplication.GetDevice(uri, credential.Name, credential.Password);
+            if (response == null) return NotFound("No se estableció conexión");           
+            return  response;
+        }
+        [HttpPost("channels/dvr")]
+        [Produces("application/xml")]
+        public async Task<IActionResult> HikvisionStatusChannelDvr(Credentials credential)
+        {
+            var uri = "http://" + credential.IpAddress + "/ISAPI/System/Video/inputs/channels";
+
+            var response = await uow.DeviceApplication.GetDevice(uri, credential.Name, credential.Password);
+            if (response == null) return NotFound("No se estableció conexión");
+            return response;
         }
     }
 }

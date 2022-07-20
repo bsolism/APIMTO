@@ -4,6 +4,7 @@ using ApiMto.Domain.UnitOfWork;
 using ApiMto.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace ApiMto.Application
 {
@@ -24,7 +25,7 @@ namespace ApiMto.Application
         }
         public async Task<Agencia> FindById(int id)
         {
-            var data = await dc.Agencias.FirstOrDefaultAsync(x => x.Id == id);
+            var data = await dc.Agencias.Include(x=> x.Cameras).ThenInclude(c=> c.Brand).Include(b=> b.SrvAg).ThenInclude(e=>e.Server).ThenInclude(x=>x.Brand).FirstOrDefaultAsync(x => x.Id == id);
             if (data != null)
             {
                 return data;

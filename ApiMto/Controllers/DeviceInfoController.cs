@@ -69,7 +69,7 @@ namespace ApiMto.Controllers
                 auth = "Basic";
             }
             if (cred.brand == "Hikvision") {
-                uri = "http://" + cred.IpAddress + "/ISAPI/Streaming/channels/1/picture";
+                uri = "http://" + cred.IpAddress + "/ISAPI/Streaming/channels/"+cred.Port+"01/picture";
                 auth = "Digest";
             }
             if (cred.brand == "Axis")

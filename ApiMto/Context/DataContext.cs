@@ -12,6 +12,9 @@ namespace ApiMto.Context
         public DbSet<SrvAg> SrvAgs { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }  
         public DbSet<Log> Logs { get; set; }
+        public DbSet<LogServer> LogServers { get; set; }
+        public DbSet<ServerDataSheet> ServerDataSheets { get; set; }
+        public DbSet<Evento> Eventos { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -19,9 +22,12 @@ namespace ApiMto.Context
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //modelBuilder.Entity<Server>().Ignore(c=> c.Cameras);
             modelBuilder.ApplyConfiguration(new ServerMapping());
             modelBuilder.ApplyConfiguration(new CameraMapping());
             modelBuilder.ApplyConfiguration(new LogMapping());
+            modelBuilder.ApplyConfiguration(new LogServerMapping());
+            modelBuilder.ApplyConfiguration(new EventoMapping());
             base.OnModelCreating(modelBuilder);
         }
     }
