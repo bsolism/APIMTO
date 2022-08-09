@@ -21,12 +21,14 @@ namespace ApiMto.Models
         public string SerialNumber { get; set; }
         public string? FirmwareVersion { get; set; }
         public string IpAddress { get; set; }
+        public string? AssetId { get; set; }
         public int Sata { get; set; }
         public int CapacidadSata { get; set; }
         public int SataInstalado { get; set; }
         public int CapacidadSataInstalado { get; set; }
         public int EngravedDays { get; set; }
-        public bool isGoodCondition { get; set; }
+        public bool Online { get; set; }
+        public bool Retired { get; set; }
         public int PortAnalogo { get; set; }
         public int PortIpPoe { get; set; }
         public int CanalesIP { get; set; }

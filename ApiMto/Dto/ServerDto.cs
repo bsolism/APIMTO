@@ -5,6 +5,7 @@ namespace ApiMto.Dto
     public class ServerDto
     {
         public int Id { get; set; }
+        public string AssetId { get; set; }
         public string Nombre { get; set; }
         public int agenciaId { get; set; }
         public string User { get; set; }
@@ -22,7 +23,7 @@ namespace ApiMto.Dto
         public int SataInstalado { get; set; }
         public int CapacidadSataInstalado { get; set; }
         public int EngravedDays { get; set; }
-        public bool isGoodCondition { get; set; }
+        public bool onLine { get; set; }
         public int PortAnalogo { get; set; }
         public int PortIpPoe { get; set; }
         public int CanalesIP { get; set; }

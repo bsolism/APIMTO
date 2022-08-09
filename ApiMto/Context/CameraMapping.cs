@@ -21,7 +21,7 @@ namespace ApiMto.Context
             builder.Property<string>(x => x.IpAddress).HasColumnType("nvarchar(MAX)");
             builder.Property<string>(x => x.Mac).HasColumnType("nvarchar(MAX)");
             builder.Property<int>(x => x.BrandId).HasColumnType("int");
-            builder.Property<bool>(x => x.IsGoodCondition).HasColumnType("bit");
+            builder.Property<bool>(x => x.Online).HasColumnType("bit");
             builder.Property<DateTime>(x => x.FechaInstalacion).HasColumnType("datetime2");
             builder.Property<DateTime>(x => x.FechaCompra).HasColumnType("datetime2");
             builder.Property<int>(x => x.ServerId).HasColumnType("int");

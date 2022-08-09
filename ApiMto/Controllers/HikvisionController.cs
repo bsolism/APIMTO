@@ -1,5 +1,6 @@
 ﻿using ApiMto.Application.UnitOfWork;
 using ApiMto.Dto;
+using ApiMto.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Text;
@@ -17,10 +18,10 @@ namespace ApiMto.Controllers
         }
         [HttpPost("capabilities")]
         [Produces("application/xml")]
-        public async Task<IActionResult> HikvisionCapabilities(Credentials credential)
+        public async Task<IActionResult> HikvisionCapabilities(Camera camera)
         {
-            var uri = "http://" + credential.IpAddress + "/ISAPI/Streaming/channels/101";
-            var response = await uow.DeviceApplication.GetDevice(uri, credential.Name, credential.Password);
+            var uri = "http://" + camera.IpAddress + "/ISAPI/Streaming/channels/101";
+            var response = await uow.DeviceApplication.GetDevice(uri, camera.User, camera.Password);
             if (response == null) return NotFound("No se estableció conexión");
             return response;
         }
@@ -102,6 +103,38 @@ namespace ApiMto.Controllers
             var response = await uow.DeviceApplication.GetDevice(uri, credential.Name, credential.Password);
             if (response == null) return NotFound("No se estableció conexión");
             return response;
+        }
+        [HttpPost("image")]
+        public async Task<IActionResult> ImageHik(Camera camera)
+        {
+            var uri = "";
+            var user="";
+            var pass="";
+            if (camera.Server != null)
+            {
+                uri = "http://" + camera.Server.IpAddress + "/ISAPI/Streaming/channels/" + camera.PortChannel + "01/picture";
+                user = camera.Server.User;
+                pass = camera.Server.Password;
+            }
+            else
+            {
+                uri = "http://" + camera.IpAddress + "/ISAPI/Streaming/channels/101/picture";
+            user= camera.User;
+                pass = camera.Password;
+
+            }
+            var credCache = new CredentialCache();
+            credCache.Add(new Uri(uri), "digest", new NetworkCredential(user, pass));
+            HttpClient client = new HttpClient(new HttpClientHandler { Credentials = credCache });
+            var response = await client.GetAsync(uri);
+            if (!response.IsSuccessStatusCode)
+            {
+                credCache.Add(new Uri(uri), "basic", new NetworkCredential(user, pass));
+                client = new HttpClient(new HttpClientHandler { Credentials = credCache });
+                response = await client.GetAsync(uri);
+            }
+            byte[] content = await response.Content.ReadAsByteArrayAsync();
+            return File(content, "image/jpeg");
         }
     }
 }

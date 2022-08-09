@@ -24,7 +24,7 @@ namespace ApiMto.Application
         }
         public async Task<IEnumerable<Server>> Get()
         {
-            return await dc.Servers.Include(x => x.Cameras).Include(x => x.Brand).ToListAsync();
+            return await dc.Servers.Include(x => x.Cameras).Include(x => x.Brand).Where(x=> x.Retired==false).ToListAsync();
         }
         public async Task<Server> FindById(int id)
         {

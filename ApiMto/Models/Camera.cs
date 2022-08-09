@@ -21,11 +21,13 @@ namespace ApiMto.Models
         public string Model { get; set; }
         public string IpAddress { get; set; }
         public string Mac { get; set; }
+        public string? AssetId { get; set; }
         public string? DeviceId { get; set; }
         public string? DeviceDescription { get; set; }
         public string SerialNumber { get; set; }
         public string? FirmwareVersion { get; set; }
-        public bool IsGoodCondition { get; set; }
+        public bool Online { get; set; }
+        public bool Retired { get; set; }
         public DateTime FechaInstalacion{ get; set; }
         public DateTime FechaCompra { get; set; }
         public string? Nota { get; set; }

@@ -4,6 +4,7 @@ using ApiMto.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiMto.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220727194520_AssetId")]
+    partial class AssetId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -100,6 +102,9 @@ namespace ApiMto.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(MAX)");
 
+                    b.Property<bool>("IsGoodCondition")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Mac")
                         .IsRequired()
                         .HasColumnType("nvarchar(MAX)");
@@ -114,9 +119,6 @@ namespace ApiMto.Migrations
 
                     b.Property<string>("Nota")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Online")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -133,9 +135,6 @@ namespace ApiMto.Migrations
 
                     b.Property<int?>("PortSwitch")
                         .HasColumnType("int");
-
-                    b.Property<bool>("Retired")
-                        .HasColumnType("bit");
 
                     b.Property<string>("SerialNumber")
                         .IsRequired()
@@ -319,9 +318,6 @@ namespace ApiMto.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(MAX)");
 
-                    b.Property<bool>("Online")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(MAX)");
@@ -331,9 +327,6 @@ namespace ApiMto.Migrations
 
                     b.Property<int>("PortIpPoe")
                         .HasColumnType("int");
-
-                    b.Property<bool>("Retired")
-                        .HasColumnType("bit");
 
                     b.Property<int>("Sata")
                         .HasColumnType("int");
@@ -356,6 +349,9 @@ namespace ApiMto.Migrations
                     b.Property<string>("User")
                         .IsRequired()
                         .HasColumnType("nvarchar(MAX)");
+
+                    b.Property<bool>("isGoodCondition")
+                        .HasColumnType("bit");
 
                     b.Property<string>("nota")
                         .HasColumnType("nvarchar(MAX)");

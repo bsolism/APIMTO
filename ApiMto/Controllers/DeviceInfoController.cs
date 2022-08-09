@@ -50,6 +50,7 @@ namespace ApiMto.Controllers
             credCache.Add(new Uri(uri), "Basic", new NetworkCredential(cred.Name, cred.Password));
             HttpClient client = new HttpClient(new HttpClientHandler { Credentials = credCache });
             var response = await client.GetAsync(uri);
+            if (!response.IsSuccessStatusCode) return new ContentResult { Content = "Unauthorized", StatusCode = 401 };
             return new ContentResult
             {
                 ContentType = "application/text",

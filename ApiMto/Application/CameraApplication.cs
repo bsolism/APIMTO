@@ -20,7 +20,7 @@ namespace ApiMto.Application
 
         public async Task<IEnumerable<Camera>> Get()
         {
-            return await dc.Cameras.Include(x=> x.Brand).Include(x=> x.Server).OrderByDescending(x=> x.Id).ToListAsync();
+            return await dc.Cameras.Include(x=> x.Brand).Include(x=> x.Server).Where(x=> x.Retired==false).OrderByDescending(x=> x.Id).ToListAsync();
         }
         public async Task<IEnumerable<Camera>> GetOnly()
         {
