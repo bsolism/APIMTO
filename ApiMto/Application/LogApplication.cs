@@ -40,6 +40,15 @@ namespace ApiMto.Application
             }
             return null;
         }
+        public async Task<Log> FindByCameraId(int id)
+        {
+            var data = await dc.Logs.OrderByDescending(x=> x.Id).FirstOrDefaultAsync(x=> x.CameraId== id);
+            if (data != null)
+            {
+                return data;
+            }
+            return null;
+        }
 
         public async Task<ObjectResult> Add(Log Log)
         {

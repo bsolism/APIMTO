@@ -3,6 +3,7 @@ using ApiMto.Domain.UnitOfWork;
 using ApiMto.Context;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.FileProviders;
+using ApiMto;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,7 @@ builder.Services.AddControllers(options =>
 {
     options.RespectBrowserAcceptHeader = true;
 });
+builder.Services.AddHostedService<IntervalTaskHostedService>();
 //builder.Services.AddControllers().AddXmlSerializerFormatters();
 /*builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -24,10 +26,12 @@ builder.Services.AddControllers().AddJsonOptions(option =>
     option.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 
 });
+
 builder.Services.AddScoped<DataContext>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUnitOfWorkDomain, UnitOfWorkDomain>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
