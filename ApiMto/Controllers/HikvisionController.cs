@@ -1,5 +1,6 @@
 ﻿using ApiMto.Application.UnitOfWork;
 using ApiMto.Dto;
+using ApiMto.Helper;
 using ApiMto.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -16,6 +17,17 @@ namespace ApiMto.Controllers
         {
             this.uow = uow;
         }
+        [HttpPost("info")]
+        [Produces("application/xml")]
+        public async Task<IActionResult> HikvisionInfo(Credentials credential)
+        {
+            var uri = "http://" + credential.IpAddress + "/ISAPI/System/deviceInfo";
+            var PassDecod = EncodingPass.DecryptPass(credential.Password).Split("|");
+            var response = await uow.DeviceApplication.GetDevice(uri, credential.Name, PassDecod[1]);
+            if (response == null) return NotFound("No se estableció conexión");
+            return response;
+           
+        }
         [HttpPost("capabilities")]
         [Produces("application/xml")]
         public async Task<IActionResult> HikvisionCapabilities(Camera camera)
@@ -25,9 +37,17 @@ namespace ApiMto.Controllers
             if (response == null) return NotFound("No se estableció conexión");
             return response;
         }
+        [HttpPost("playback")]
+        public async Task<IActionResult> HikvisionPlayback(Credentials credential)
+        {
+            var uri = "http://" + credential.IpAddress + "/ISAPI/ContentMgmt/record/tracks/401/dailyDistribution";
+            var response = await uow.DeviceApplication.GetPlayBack(uri, credential.Name, credential.Password);
+            if (response == null) return NotFound("No se estableció conexión");
+            return Ok(response);
+        }
         [HttpPost("time")]
         [Produces("application/xml")]
-        public async Task<IActionResult> HikvisionInfo(Credentials credential)
+        public async Task<IActionResult> HikvisionTime(Credentials credential)
         {
             var uri = "http://" + credential.IpAddress + "/ISAPI/System/time";
             var response = await uow.DeviceApplication.GetDevice(uri, credential.Name, credential.Password);

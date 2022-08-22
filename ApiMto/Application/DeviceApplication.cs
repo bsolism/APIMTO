@@ -1,15 +1,20 @@
 ﻿using ApiMto.Application.Interfaces;
+using ApiMto.Domain.UnitOfWork;
+using ApiMto.Helper;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Text;
 using System.Xml.Linq;
 
 namespace ApiMto.Application
 {
     public class DeviceApplication : IDeviceApplication
     {
-        public DeviceApplication()
-        {
+        private readonly IUnitOfWorkDomain uow;
 
+        public DeviceApplication(IUnitOfWorkDomain uow)
+        {
+            this.uow = uow;
         }
         public async Task<IActionResult> GetDevice(string uri, string user, string pass)
         {          
@@ -51,6 +56,13 @@ namespace ApiMto.Application
             HttpClient client = new HttpClient(new HttpClientHandler { Credentials = credCache });
             var response = await client.GetAsync(uri);
             return new ObjectResult(response) { StatusCode =200};
+        }
+        public async Task<IActionResult> GetPlayBack(string uri, string user, string pass)
+        {
+            var password = EncodingPass.DecryptPass(pass).Split("|");
+            var dayPlayBack =await  uow.DeviceDomain.DayPlayback(uri, user, password[1]);
+            return new ContentResult { Content = dayPlayBack.ToString(), StatusCode = 200 };
+
         }
        
         public async Task<IActionResult> Put(string IP, string user, string pass, HttpContent content)

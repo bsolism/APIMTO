@@ -1,6 +1,7 @@
 ﻿using ApiMto.Application.Interfaces;
 using ApiMto.Context;
 using ApiMto.Domain.UnitOfWork;
+using ApiMto.Helper;
 using ApiMto.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -68,6 +69,9 @@ namespace ApiMto.Application
           //  var srvAg = await dc.SrvAgs.AsNoTracking().FirstOrDefaultAsync(x => x.AgenciaId == camera.AgenciaId && x.ServerId == camera.ServerId);
             if (find.Result == null)
             {
+               
+                //var passEnco = EncodingPass.EncryptPass(camera.SerialNumber + "|" + camera.Password);
+                //camera.Password = passEnco;
                 dc.Cameras.Add(camera);
                 await dc.SaveChangesAsync();
                 var srvAg=FindBySrvAg(camera);
@@ -92,5 +96,6 @@ namespace ApiMto.Application
             return new ObjectResult(camera) { StatusCode = 200 };
 
         }
+       
     }
 }

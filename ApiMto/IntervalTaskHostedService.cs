@@ -1,5 +1,6 @@
 ﻿using ApiMto.Application.UnitOfWork;
 using ApiMto.Dto;
+using ApiMto.Helper;
 using ApiMto.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -20,102 +21,104 @@ namespace ApiMto
         public Task StartAsync(CancellationToken cancellationToken)
         {
             //Check(null);
-           _timer = new Timer(Check, null, TimeSpan.Zero, TimeSpan.FromSeconds(300));
+           // _timer = new Timer(Check, null, TimeSpan.Zero, TimeSpan.FromSeconds(300));
+            //ChangePass(null);
 
             return Task.CompletedTask;
+        }
+        public async void ChangePass(Object? state)
+        {
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var scopeService= scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+                IEnumerable<Server>? item = await scopeService.ServerApplication.Get();
+                foreach(Server val in item)
+                {
+                    var newPass = EncodingPass.EncryptPass(val.SerialNumber + "|" + val.Password);
+                    val.Password = newPass;
+                    await scopeService.ServerApplication.Update(val.Id, val);                   
+                }
+                Console.WriteLine("End");
+            }
         }
         public async void Check(Object? state)
         {
             using (var scope = serviceProvider.CreateScope())
             {
                 var scopedService = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-                var data =  scopedService.AgenciaApplication.Get();
-                IEnumerable<Agencia>? ag = data.Result;
-                foreach (Agencia dat in ag)
+                IEnumerable<Server>? srv =await scopedService.ServerApplication.Get();
+                foreach(Server sr in srv)
                 {
-                    if (dat.Id > 0)
+                    if (sr.BrandId == 1)
                     {
-
-                        //Console.WriteLine(dat.Nombre);
-
-
-                        foreach (var svr in dat?.SrvAg)
+                        if (sr.PortAnalogo == 0)
                         {
+                            var uri = "http://" + sr.IpAddress + "/ISAPI/ContentMgmt/InputProxy/channels/status";
+                            var node = "InputProxyChannelStatus";
+                            var tagName = "online";
+                            var tagValue = "false";
+                            checkDeviceHik(sr, uri, node, tagName, tagValue);
+                        }
+                        if (sr.PortAnalogo > 0)
+                        {
+                            var uri = "http://" + sr.IpAddress + "/ISAPI/System/Video/inputs/channels";
+                            var node = "VideoInputChannel";
+                            var tagName = "resDesc";
+                            var tagValue = "NO VIDEO";
+                            checkDeviceHik(sr, uri, node, tagName, tagValue);
 
-                            var sr = svr.Server;
-                            //Console.WriteLine(sr.Nombre);
-                            if (sr.BrandId == 1)
-                            {
-                                if (sr.PortAnalogo == 0)
-                                {
-                                    var uri = "http://" + sr.IpAddress + "/ISAPI/ContentMgmt/InputProxy/channels/status";
-                                    var node = "InputProxyChannelStatus";
-                                    var tagName = "online";
-                                    var tagValue = "false";
-                                    checkDeviceHik(sr, uri, node, tagName, tagValue, dat);
-                                }
-                                if (sr.PortAnalogo > 0)
-                                {
-                                    var uri = "http://" + sr.IpAddress + "/ISAPI/System/Video/inputs/channels";
-                                    var node = "VideoInputChannel";
-                                    var tagName = "resDesc";
-                                    var tagValue = "NO VIDEO";
-                                    checkDeviceHik(sr, uri, node, tagName, tagValue, dat);
-
-                                }
-                                if (sr.PortAnalogo > 0 && sr.CanalesIP > 0)
-                                {
-                                    var uri = "http://" + sr.IpAddress + "/ISAPI/ContentMgmt/InputProxy/channels/status";
-                                    var node = "InputProxyChannelStatus";
-                                    var tagName = "online";
-                                    var tagValue = "false";
-                                    checkDeviceHik(sr, uri, node, tagName, tagValue, dat);
-                                }
-                            }
-                            if(sr.BrandId == 2)
-                            {
-                                foreach (var cam in dat.Cameras)
-                                {
-                                    var uri = "http://" + cam.IpAddress + "/cgi-bin/viewer/getparam.cgi?system_hostname&system_info";
-                                    var response = await conDevice(uri, cam.User, cam.Password);
-                                    if (response == null || !response.IsSuccessStatusCode)
-                                    {
-                                        updateDevice(cam, false);
-                                        addLog(cam, "OffLine", false);
-                                        addEvent(cam, "OffLine");
-                                    }
-                                    else if (response.IsSuccessStatusCode)
-                                    {
-                                        if (cam.Online == false)
-                                        {
-                                            updateDevice(cam, true);
-                                            addLog(cam, "OnLine", true);
-                                            deleteEvent(cam);
-                                        }
-                                    }
-                                }
-                                break;
-                            }
-                            Thread.Sleep(5000);
-
-
+                        }
+                        if (sr.PortAnalogo > 0 && sr.CanalesIP > 0)
+                        {
+                            var uri = "http://" + sr.IpAddress + "/ISAPI/ContentMgmt/InputProxy/channels/status";
+                            var node = "InputProxyChannelStatus";
+                            var tagName = "online";
+                            var tagValue = "false";
+                            checkDeviceHik(sr, uri, node, tagName, tagValue);
                         }
 
                     }
+                    if (sr.BrandId == 2)
+                    {
+                        foreach (var cam in sr.Cameras)
+                        {
+                            var uri = "http://" + cam.IpAddress + "/cgi-bin/viewer/getparam.cgi?system_hostname&system_info";
+                            var passUncryp = EncodingPass.DecryptPass(cam.Password).Split("|");
+                            var response = await conDevice(uri, cam.User,passUncryp[1]);
+                            if (response == null || !response.IsSuccessStatusCode)
+                            {
+                                updateDevice(cam, false);
+                                addLog(cam, "OffLine", false);
+                                addEvent(cam, "OffLine");
+                            }
+                            else if (response.IsSuccessStatusCode)
+                            {
+                                if (cam.Online == false)
+                                {
+                                    updateDevice(cam, true);
+                                    addLog(cam, "OnLine", true);
+                                    deleteEvent(cam);
+                                }
+                            }
+                        }
+                        
+                    }
+                   
                 }
             }
-           // Console.WriteLine("End");              
+            Console.WriteLine("End");              
         }
 
-        private async void checkDeviceHik(Server sr,string uri,string node, string tagName, string tagValue, Agencia dat)
+        private async void checkDeviceHik(Server sr,string uri,string node, string tagName, string tagValue)
         {
             using (var scope = serviceProvider.CreateScope())
             {
                 var scopedService = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-                var response = await conDevice(uri, sr.User,sr.Password);
+                var passUncryp = EncodingPass.DecryptPass(sr.Password).Split("|");
+                var response = await conDevice(uri, sr.User,passUncryp[1]);
                 if (response == null)
                 {
-                    foreach (var cam in dat.Cameras)
+                    foreach (var cam in sr.Cameras)
                     {
                         updateDevice(cam, false);
                         addLog(cam, "Error NVR", false);
@@ -141,9 +144,9 @@ namespace ApiMto
                             if (item.Name.Equals("id")) channel = item.InnerText;
                             if (item.Name.Equals(tagName) && item.InnerText.Equals(tagValue))
                             {
-                                foreach (var cam in dat.Cameras)
+                                foreach (var cam in sr.Cameras)
                                 {
-                                    if (cam.PortChannel == Convert.ToInt32(channel) && cam.ServerId == sr.Id)
+                                    if (cam.PortChannel == Convert.ToInt32(channel))
                                     {
                                         updateDevice(cam, false);
                                         addLog(cam, "OffLine", false);
@@ -153,7 +156,7 @@ namespace ApiMto
                             }
                             if (item.Name.Equals(tagName) && !item.InnerText.Equals(tagValue))
                             {
-                                foreach (var cam in dat.Cameras)
+                                foreach (var cam in sr.Cameras)
                                 {
                                     if (cam.PortChannel == Convert.ToInt32(channel))
                                     {
@@ -175,7 +178,8 @@ namespace ApiMto
         {
             var response = new HttpResponseMessage();
             var credCache = new CredentialCache();
-            credCache.Add(new Uri(uri),"Digest", new NetworkCredential(user, pass));
+            
+            credCache.Add(new Uri(uri),"Digest", new NetworkCredential(user,pass));
             HttpClient client = new HttpClient(new HttpClientHandler { Credentials = credCache });
             try
             {

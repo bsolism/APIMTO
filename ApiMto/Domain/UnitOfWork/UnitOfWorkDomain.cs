@@ -18,5 +18,7 @@ namespace ApiMto.Domain.UnitOfWork
            new CameraDomain(dc);
         public IHelperDomain HelperDomain =>
             new HelperDomain(environment);
+        public IDeviceDomain DeviceDomain =>
+            new DeviceDomain(dc);
     }
 }

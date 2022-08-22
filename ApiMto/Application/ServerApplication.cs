@@ -2,6 +2,7 @@
 using ApiMto.Context;
 using ApiMto.Domain.UnitOfWork;
 using ApiMto.Dto;
+using ApiMto.Helper;
 using ApiMto.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -28,10 +29,10 @@ namespace ApiMto.Application
         }
         public async Task<Server> FindById(int id)
         {
-            var pet = await dc.Servers.Include(x => x.Cameras).FirstOrDefaultAsync(x => x.Id == id);
-            if (pet != null)
+            var data = await dc.Servers.Include(x => x.Cameras).FirstOrDefaultAsync(x => x.Id == id);
+            if (data != null)
             {
-                return pet;
+                return data;
             }
             return null;
         }
@@ -83,7 +84,6 @@ namespace ApiMto.Application
         }
         public async Task<ObjectResult> Update(int id, Server server)
         {
-
             dc.Entry(server).State = EntityState.Modified;
             var res = await dc.SaveChangesAsync();
             return new ObjectResult(server) { StatusCode = 200 };

@@ -18,7 +18,7 @@ namespace ApiMto.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-460R51L\SQLEXPRESS;Initial Catalog=APPMTO; User Id=mto; Password=mto123;Trusted_Connection=false; ConnectRetryCount=0");
+            optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-460R51L\SQLEXPRESS;Initial Catalog=APPMTODEMO; User Id=mto; Password=mto123;Trusted_Connection=false; ConnectRetryCount=0");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

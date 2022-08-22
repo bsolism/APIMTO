@@ -6,6 +6,7 @@ namespace ApiMto.Application.Interfaces
     {
         Task<IActionResult> GetDevice(string uri, string user, string pass);
         Task<ObjectResult> Get(string IP, string user, string pass);
+        Task<IActionResult> GetPlayBack(string uri, string user, string pass);
         Task<IActionResult> Put(string IP, string user, string pass, HttpContent content);
         Task<IActionResult> PutMic(string IP, string user, string pass, HttpContent content);
         Task<IActionResult> Update(string uri, string user, string pass, HttpContent content);

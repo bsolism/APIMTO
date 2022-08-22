@@ -26,7 +26,7 @@ namespace ApiMto.Application.UnitOfWork
         public IBrandApplication BrandApplication =>
            new BrandApplication(dc, uowd);
         public IDeviceApplication DeviceApplication =>
-            new DeviceApplication();
+            new DeviceApplication(uowd);
         public ILogApplication LogApplication =>
           new LogApplication(dc, uowd);
         public ILogServerApplication LogServerApplication =>
