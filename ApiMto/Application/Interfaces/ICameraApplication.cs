@@ -1,4 +1,5 @@
-﻿using ApiMto.Models;
+﻿using ApiMto.Dto;
+using ApiMto.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiMto.Application.Interfaces
@@ -10,6 +11,7 @@ namespace ApiMto.Application.Interfaces
         Task<Camera> FindById(int id);
         Task<Camera> FindByChannel(int id, int serverId);
         Task<ObjectResult> Add(Camera camera);
+        Task<ObjectResult> AddFile(CameraDataSheetDto sdsd);
         Task<ObjectResult> Update(int id, Camera camera);
 
 

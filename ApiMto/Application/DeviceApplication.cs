@@ -57,10 +57,23 @@ namespace ApiMto.Application
             var response = await client.GetAsync(uri);
             return new ObjectResult(response) { StatusCode =200};
         }
-        public async Task<IActionResult> GetPlayBack(string uri, string user, string pass)
+        public async Task<IActionResult> GetPlayBack(string ip,string user, string pass)
         {
+            var uri = "http://" + ip + "/ISAPI/ContentMgmt/record/tracks/101/dailyDistribution";
             var password = EncodingPass.DecryptPass(pass).Split("|");
             var dayPlayBack =await  uow.DeviceDomain.DayPlayback(uri, user, password[1]);
+            if (dayPlayBack <= 0)
+            {
+                var ch = 2;
+                for (int i = 0; i < 8; i++)
+                {
+                    uri = "http://" + ip + "/ISAPI/ContentMgmt/record/tracks/"+ch+"01/dailyDistribution";
+                    dayPlayBack = await uow.DeviceDomain.DayPlayback(uri, user, password[1]);
+                    if (dayPlayBack > 0) break;
+                    ch++;
+
+                }
+            }
             return new ContentResult { Content = dayPlayBack.ToString(), StatusCode = 200 };
 
         }

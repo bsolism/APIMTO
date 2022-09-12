@@ -39,6 +39,16 @@ namespace ApiMto.Controllers
             var data = uow.CameraApplication.FindByChannel(id, serverId);
             return data;
         }
+        [HttpPost("pdf")]
+        public async Task<IActionResult> AddFile([FromForm] CameraDataSheetDto cameraDataSheetDto)
+        {
+            var data = await uow.CameraApplication.AddFile(cameraDataSheetDto);
+            if (data.StatusCode == 500)
+            {
+                return BadRequest(data.Value);
+            }
+            return Ok(data.Value);
+        }
         [HttpPost]
         public async Task<IActionResult> Add(Camera camera)
         {

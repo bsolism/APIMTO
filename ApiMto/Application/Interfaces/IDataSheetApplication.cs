@@ -6,5 +6,6 @@ namespace ApiMto.Application.Interfaces
     public interface IDataSheetApplication
     {
         Task<ObjectResult> FindByServerId(int id);
+        Task<ObjectResult> FindByCameraId(int id);
     }
 }

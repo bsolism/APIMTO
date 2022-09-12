@@ -20,9 +20,9 @@ namespace ApiMto
         }     
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            //Check(null);
+            Check(null);
            // _timer = new Timer(Check, null, TimeSpan.Zero, TimeSpan.FromSeconds(300));
-            //ChangePass(null);
+            
 
             return Task.CompletedTask;
         }
@@ -31,12 +31,12 @@ namespace ApiMto
             using (var scope = serviceProvider.CreateScope())
             {
                 var scopeService= scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-                IEnumerable<Server>? item = await scopeService.ServerApplication.Get();
-                foreach(Server val in item)
+                IEnumerable<Camera>? item = await scopeService.CameraApplication.Get();
+                foreach(Camera val in item)
                 {
                     var newPass = EncodingPass.EncryptPass(val.SerialNumber + "|" + val.Password);
                     val.Password = newPass;
-                    await scopeService.ServerApplication.Update(val.Id, val);                   
+                    await scopeService.CameraApplication.Update(val.Id, val);                   
                 }
                 Console.WriteLine("End");
             }
@@ -80,26 +80,38 @@ namespace ApiMto
                     }
                     if (sr.BrandId == 2)
                     {
+
                         foreach (var cam in sr.Cameras)
                         {
-                            var uri = "http://" + cam.IpAddress + "/cgi-bin/viewer/getparam.cgi?system_hostname&system_info";
-                            var passUncryp = EncodingPass.DecryptPass(cam.Password).Split("|");
-                            var response = await conDevice(uri, cam.User,passUncryp[1]);
-                            if (response == null || !response.IsSuccessStatusCode)
+                            var uri = "";
+                            if (cam.BrandId == 2)
                             {
-                                updateDevice(cam, false);
-                                addLog(cam, "OffLine", false);
-                                addEvent(cam, "OffLine");
+                                uri = "http://" + cam.IpAddress + "/cgi-bin/viewer/getparam.cgi?system_hostname&system_info";
                             }
-                            else if (response.IsSuccessStatusCode)
+                            if (cam.BrandId == 6)
                             {
-                                if (cam.Online == false)
+                                uri = "http://" + cam.IpAddress + "/VideoServerSPN.xml";
+                            }
+                                var passUncryp = EncodingPass.DecryptPass(cam.Password).Split("|");
+                                var response = await conDevice(uri, cam.User, passUncryp[1]);
+                                if (response == null || !response.IsSuccessStatusCode)
                                 {
-                                    updateDevice(cam, true);
-                                    addLog(cam, "OnLine", true);
-                                    deleteEvent(cam);
+                                    updateDevice(cam, false);
+                                    addLog(cam, "OffLine", false);
+                                    addEvent(cam, "OffLine");
                                 }
-                            }
+                                else if (response.IsSuccessStatusCode)
+                                {
+                                    if (cam.Online == false)
+                                    {
+                                        updateDevice(cam, true);
+                                        addLog(cam, "OnLine", true);
+                                        deleteEvent(cam);
+                                    }
+                                }
+
+                            
+                           
                         }
                         
                     }

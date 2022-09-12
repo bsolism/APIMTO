@@ -1,5 +1,6 @@
 ﻿using ApiMto.Application.UnitOfWork;
 using ApiMto.Dto;
+using ApiMto.Helper;
 using ApiMto.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -28,12 +29,13 @@ namespace ApiMto.Controllers
         {
             var uri = "http://" + cred.IpAddress + "/cgi-bin/viewer/video.jpg";
             var credCache = new CredentialCache();
-            credCache.Add(new Uri(uri), "digest", new NetworkCredential(cred.User, cred.Password));
+            var PassDecod = EncodingPass.DecryptPass(cred.Password).Split("|");
+            credCache.Add(new Uri(uri), "digest", new NetworkCredential(cred.User, PassDecod[1]));
             HttpClient client = new HttpClient(new HttpClientHandler { Credentials = credCache });
             var response = await client.GetAsync(uri);
             if (!response.IsSuccessStatusCode)
             {
-                credCache.Add(new Uri(uri), "Basic", new NetworkCredential(cred.User, cred.Password));
+                credCache.Add(new Uri(uri), "Basic", new NetworkCredential(cred.User, PassDecod[1]));
                 client = new HttpClient(new HttpClientHandler { Credentials = credCache });
                 response = await client.GetAsync(uri);
             }
@@ -46,12 +48,13 @@ namespace ApiMto.Controllers
         {
             var uri = "http://" + cred.IpAddress + "/cgi-bin/viewer/getparam.cgi?system_hostname&system_info";
             var credCache = new CredentialCache();
-            credCache.Add(new Uri(uri), "Digest", new NetworkCredential(cred.Name, cred.Password));
+            var PassDecod = EncodingPass.DecryptPass(cred.Password).Split("|");
+            credCache.Add(new Uri(uri), "Digest", new NetworkCredential(cred.Name, PassDecod[1]));
             HttpClient client = new HttpClient(new HttpClientHandler { Credentials = credCache });
             var response = await client.GetAsync(uri);
             if (!response.IsSuccessStatusCode)
             {
-                credCache.Add(new Uri(uri), "Basic", new NetworkCredential(cred.Name, cred.Password));
+                credCache.Add(new Uri(uri), "Basic", new NetworkCredential(cred.Name, PassDecod[1]));
                 client = new HttpClient(new HttpClientHandler { Credentials = credCache });
                 response = await client.GetAsync(uri);
             }

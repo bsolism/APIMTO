@@ -23,5 +23,14 @@ namespace ApiMto.Application
             }
             return new ObjectResult("DataSheet not found") { StatusCode = 500 };
         }
+        public async Task<ObjectResult> FindByCameraId(int id)
+        {
+            var data = await dc.CameraDataSheets.FirstOrDefaultAsync(x => x.CameraId == id);
+            if (data != null)
+            {
+                return new ObjectResult(data) { StatusCode = 200 };
+            }
+            return new ObjectResult("DataSheet not found") { StatusCode = 500 };
+        }
     }
 }

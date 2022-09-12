@@ -84,6 +84,7 @@ namespace ApiMto.Application
         }
         public async Task<ObjectResult> Update(int id, Server server)
         {
+
             dc.Entry(server).State = EntityState.Modified;
             var res = await dc.SaveChangesAsync();
             return new ObjectResult(server) { StatusCode = 200 };

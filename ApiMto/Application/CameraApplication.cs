@@ -1,6 +1,7 @@
 ﻿using ApiMto.Application.Interfaces;
 using ApiMto.Context;
 using ApiMto.Domain.UnitOfWork;
+using ApiMto.Dto;
 using ApiMto.Helper;
 using ApiMto.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,7 @@ namespace ApiMto.Application
 
         public async Task<IEnumerable<Camera>> Get()
         {
-            return await dc.Cameras.Include(x=> x.Brand).Include(x=> x.Server).Where(x=> x.Retired==false).OrderByDescending(x=> x.Id).ToListAsync();
+            return await dc.Cameras.Include(x=> x.Brand).Include(x=> x.Server).OrderByDescending(x=> x.Id).ToListAsync();
         }
         public async Task<IEnumerable<Camera>> GetOnly()
         {
@@ -62,6 +63,20 @@ namespace ApiMto.Application
                 return data;
             }
             return null;
+        }
+        public async Task<ObjectResult> AddFile(CameraDataSheetDto sdsd)
+        {
+            if (sdsd.File != null)
+            {
+                var file = uowd.HelperDomain.UploadFilePdf(sdsd.File);
+                var cameraDataSheet = new CameraDataSheet { DataSheetName = file, CameraId = sdsd.CameraId };
+                dc.CameraDataSheets.Add(cameraDataSheet);
+                await dc.SaveChangesAsync();
+
+            }
+
+
+            return new ObjectResult(sdsd);
         }
         public async Task<ObjectResult> Add(Camera camera)
         {

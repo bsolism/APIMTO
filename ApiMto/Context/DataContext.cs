@@ -14,11 +14,12 @@ namespace ApiMto.Context
         public DbSet<Log> Logs { get; set; }
         public DbSet<LogServer> LogServers { get; set; }
         public DbSet<ServerDataSheet> ServerDataSheets { get; set; }
+        public DbSet<CameraDataSheet> CameraDataSheets { get; set; }
         public DbSet<Evento> Eventos { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-460R51L\SQLEXPRESS;Initial Catalog=APPMTODEMO; User Id=mto; Password=mto123;Trusted_Connection=false; ConnectRetryCount=0");
+            optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-460R51L\SQLEXPRESS;Initial Catalog=APPMTO; User Id=mto; Password=mto123;Trusted_Connection=false; ConnectRetryCount=0");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

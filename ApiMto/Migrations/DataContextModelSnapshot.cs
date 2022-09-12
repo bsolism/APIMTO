@@ -174,6 +174,28 @@ namespace ApiMto.Migrations
                     b.ToTable("Camera", "dbo");
                 });
 
+            modelBuilder.Entity("ApiMto.Models.CameraDataSheet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CameraId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DataSheetName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CameraId");
+
+                    b.ToTable("CameraDataSheets");
+                });
+
             modelBuilder.Entity("ApiMto.Models.Evento", b =>
                 {
                     b.Property<int>("Id")
@@ -457,6 +479,17 @@ namespace ApiMto.Migrations
                     b.Navigation("Brand");
 
                     b.Navigation("Server");
+                });
+
+            modelBuilder.Entity("ApiMto.Models.CameraDataSheet", b =>
+                {
+                    b.HasOne("ApiMto.Models.Camera", "Camera")
+                        .WithMany()
+                        .HasForeignKey("CameraId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Camera");
                 });
 
             modelBuilder.Entity("ApiMto.Models.Evento", b =>

@@ -23,9 +23,17 @@ namespace ApiMto.Domain.Domain
                     Directory.CreateDirectory(environment.WebRootPath + "\\DataSheet\\");
                 }
                 string fichero = Path.Combine(environment.WebRootPath, "DataSheet");
-                guidImagen = Guid.NewGuid().ToString() + File.FileName;
+                guidImagen = File.FileName;
                 string url = Path.Combine(fichero, guidImagen);
+                try
+                {
+
                 File.CopyTo(new FileStream(url, FileMode.Create));
+                }
+                catch (IOException)
+                {
+                    return guidImagen;
+                }
 
                 return guidImagen;
             }

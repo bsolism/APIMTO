@@ -63,11 +63,12 @@ namespace ApiMto.Domain.Domain
         public async Task<int> DayPlayback(string uri, string user, string pass)
         {
             var moment = DateTime.Now;
-            int month = (moment.Month - 2);
+            int month = (moment.Month - 3);
             int currenMonth = (moment.Month);
             int year = moment.Year;
             int dayPlayback = 0;
-            for (int i = 0; i < 3; i++)
+            var dayOfMonth = "";
+            for (int i = 0; i < 4; i++)
             {
                 monthYear(currenMonth, year, month, i);
                 string xml = xmlData(year, month);
@@ -84,51 +85,82 @@ namespace ApiMto.Domain.Domain
                 XmlDocument xmlDocument = new XmlDocument();
                 xmlDocument.LoadXml(contentResult.Content);
                 XmlNodeList xmlNodeList = xmlDocument.GetElementsByTagName("day");
+               
+                
                 foreach (XmlNode xmlNode in xmlNodeList)
                 {
                     foreach (XmlNode item in xmlNode)
                     {
-
+                        if (item.Name.Equals("dayOfMonth")) dayOfMonth = item.InnerText;
                         if (item.Name.Equals("record") && item.InnerText.Equals("true"))
                         {
                             dayPlayback++;
+                           
+                            
                         }
+                        if (dayPlayback > 0) { 
+                        
+                        break;
+                        }
+                    }
+                    if (dayPlayback > 0) { 
+                    
+                    break;
                     }
 
                 }
+                if (dayPlayback > 0) { 
+                
+                break;
+                }
                 month++;
             }
+            DateTime dateOld = DateTime.Parse(year+"-"+month+"-"+ dayOfMonth);
+           
+
+            dayPlayback=Convert.ToInt32((DateTime.Now - dateOld).TotalDays);
 
             return dayPlayback;
         }
         private void monthYear(int currenMonth, int year, int month, int i)
         {
-            if (currenMonth == 1 && i < 2)
+            if (currenMonth == 1 && i < 3)
             {
                 year = year - 1;
-                month = 11 + i;
+                month = 10 + i;
 
             }
             else
-               if (currenMonth == 1 && i == 2)
+               if (currenMonth == 1 && i == 3)
             {
                 year = year + 1;
                 month = currenMonth;
 
             }
             else
-               if (currenMonth == 2 && i == 0)
+               if (currenMonth == 2 && i < 2)
+            {
+                year = year - 1;
+                month = 11+i;
+
+            }
+            else
+               if (currenMonth == 2 && i > 1)
+            {
+                year = year + 1;
+                month = i-1;
+
+            }else
+            if (currenMonth == 3 && i == 0)
             {
                 year = year - 1;
                 month = 12;
 
-            }
-            else
-               if (currenMonth == 2 && i > 0)
+            }else
+            if (currenMonth == 3 && i > 0)
             {
                 year = year + 1;
                 month = i;
-
             }
 
         }
