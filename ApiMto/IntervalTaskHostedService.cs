@@ -50,8 +50,7 @@ namespace ApiMto
                 bool deviceOn = true;
                foreach(Server sr in srv)
                 {
-                    if (sr.Id == 41)
-                    {
+                   
                         if (sr.BrandId == 1)
                         {
                             if (sr.PortAnalogo == 0)
@@ -119,7 +118,7 @@ namespace ApiMto
                             }
 
                         }
-                    }
+                    
                    
                 }
             }
