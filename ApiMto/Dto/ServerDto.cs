@@ -4,34 +4,36 @@ namespace ApiMto.Dto
 {
     public class ServerDto
     {
-        public int Id { get; set; }
-        public string AssetId { get; set; }
-        public string Nombre { get; set; }
-        public int agenciaId { get; set; }
+        public string Id { get; set; }
+        public string Name { get; set; }
         public string User { get; set; }
         public string Password { get; set; }
-        public string Ubicacion { get; set; }
+        public string Location { get; set; }
         public string Type { get; set; }
-        public string Modelo { get; set; }
+        public string AgencyId { get; set; }
+        public string Model { get; set; }
         public string Mac { get; set; }
         public string? DeviceId { get; set; }
         public string SerialNumber { get; set; }
         public string? FirmwareVersion { get; set; }
         public string IpAddress { get; set; }
-        public int Sata { get; set; }
-        public int CapacidadSata { get; set; }
-        public int SataInstalado { get; set; }
-        public int CapacidadSataInstalado { get; set; }
+        public string? AssetId { get; set; }
+        public int SlotSata { get; set; }
+        public int CapacityBySlot { get; set; }
+        public int SataAvailable { get; set; }
+        public int CapacityTotal { get; set; }
         public int EngravedDays { get; set; }
-        public bool onLine { get; set; }
+        public bool Online { get; set; }
+        public bool Retired { get; set; }
         public int PortAnalogo { get; set; }
         public int PortIpPoe { get; set; }
-        public int CanalesIP { get; set; }
-        public string? nota { get; set; }
-        public DateTime FechaInstalacion { get; set; }
-        public DateTime FechaCompra { get; set; }
+        public int ChannelIP { get; set; }
+        public string? Note { get; set; }
+        public DateTime DateInstallation { get; set; }
+        public DateTime DateBuy { get; set; }
         public int BrandId { get; set; }
         public Brand? Brand { get; set; }
-        public List<Camera>? Cameras { get; set; }
+
+       
     }
 }

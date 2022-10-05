@@ -6,12 +6,12 @@ namespace ApiMto.Models
     public class Camera
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public string User { get; set; }
         public string Password { get; set; }
-        public string UbicacionFisica { get; set; }
-        public string UbicacionConexion { get; set; }
+        public string Location { get; set; }
+        public string Connection { get; set; }
         public string? PatchPanel { get; set; }
         public string? Switch { get; set; }
         public int? PortPatchPanel { get; set; }
@@ -28,15 +28,15 @@ namespace ApiMto.Models
         public string? FirmwareVersion { get; set; }
         public bool Online { get; set; }
         public bool Retired { get; set; }
-        public DateTime FechaInstalacion{ get; set; }
-        public DateTime FechaCompra { get; set; }
-        public string? Nota { get; set; }
+        public DateTime DateInstallation{ get; set; }
+        public DateTime DateBuy { get; set; }
+        public string? Note { get; set; }
         public int BrandId { get; set; }
         public Brand? Brand { get; set; }
-        public int ServerId { get; set; }
+        public string ServerId { get; set; }
         public Server? Server { get; set; }
-        public int AgenciaId { get; set; }
+        public string AgencyId { get; set; }
         [IgnoreDataMember]
-        public Agencia? Agencia { get; set; }
+        public Agency? Agency { get; set; }
     }
 }

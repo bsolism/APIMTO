@@ -4,24 +4,24 @@
 
 namespace ApiMto.Migrations
 {
-    public partial class prop_Channel : Migration
+    public partial class RefactLog2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "PortChannel",
+            migrationBuilder.RenameColumn(
+                name: "LogName",
                 schema: "dbo",
-                table: "Camera",
-                type: "int",
-                nullable: true);
+                table: "Logs",
+                newName: "Message");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "PortChannel",
+            migrationBuilder.RenameColumn(
+                name: "Message",
                 schema: "dbo",
-                table: "Camera");
+                table: "Logs",
+                newName: "LogName");
         }
     }
 }

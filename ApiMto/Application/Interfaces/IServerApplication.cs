@@ -7,9 +7,9 @@ namespace ApiMto.Application.Interfaces
     public interface IServerApplication
     {
         Task<IEnumerable<Server>> Get();
-        Task<Server> FindById(int id);
+        Task<Server> FindById(string id);
         Task<ObjectResult> Add(ServerDto serverDto);
-        Task<ObjectResult> AddFile(ServerDataSheetDto sdsd);
-        Task<ObjectResult> Update(int id, Server server);
+        Task<ObjectResult> AddFile(DataSheetDto sdsd);
+        Task<ObjectResult> Update(string id, Server server);
     }
 }

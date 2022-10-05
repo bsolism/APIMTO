@@ -6,11 +6,11 @@ namespace ApiMto.Models
     {
         [Key]
         public int Id { get; set; }
-        public string Evento { get; set; }
+        public string LogName { get; set; }
         public DateTime Date { get; set; }
-        public int UsuarioId { get; set; }
-        public Usuario? Usuario { get; set; }
-        public int ServerId { get; set; }
+        public int UserId { get; set; }
+        public User? User { get; set; }
+        public string ServerId { get; set; }
         public Server? Server { get; set; }
     }
 }

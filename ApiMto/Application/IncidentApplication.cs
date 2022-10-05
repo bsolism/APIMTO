@@ -6,30 +6,30 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApiMto.Application
 {
-    public class EventoApplication: IEventoApplication
+    public class IncidentApplication: IIncidentApplication
     {
         private readonly DataContext dc;
 
-        public EventoApplication(DataContext dc)
+        public IncidentApplication(DataContext dc)
         {
             this.dc = dc;
         }
-        public async Task<IEnumerable<Evento>> Get()
+        public async Task<IEnumerable<Incident>> Get()
         {
-            return await dc.Eventos.Include(x=> x.Camera).ThenInclude(x=> x.Server).ToListAsync();
+            return await dc.Incidents.Include(x=> x.Camera).ThenInclude(x=> x.Server).ToListAsync();
         }
-        public async Task<Evento> FindByCam(int id)
+        public async Task<Incident> FindByCam(string id)
         {
-            var data = await dc.Eventos.OrderByDescending(x=> x.Id).FirstOrDefaultAsync(x=> x.CameraId== id);
+            var data = await dc.Incidents.OrderByDescending(x=> x.Id).FirstOrDefaultAsync(x=> x.CameraId== id);
             if (data != null)
             {
                 return data;
             }
             return null;
         }
-        public async Task<Evento> FindById(int id)
+        public async Task<Incident> FindById(int id)
         {
-            var data = await dc.Eventos.FirstOrDefaultAsync(x => x.Id == id);
+            var data = await dc.Incidents.FirstOrDefaultAsync(x => x.Id == id);
             if (data != null)
             {
                 return data;
@@ -37,17 +37,17 @@ namespace ApiMto.Application
             return null;
         }
 
-        public async Task<ObjectResult> Add(Evento evento)
+        public async Task<ObjectResult> Add(Incident evento)
         {
 
-            dc.Eventos.Add(evento);
+            dc.Incidents.Add(evento);
             await dc.SaveChangesAsync();
             return new ObjectResult(evento);
 
         }
-        public async Task<ObjectResult> Delete(Evento evento)
+        public async Task<ObjectResult> Delete(Incident evento)
         {
-            dc.Eventos.Remove(evento);
+            dc.Incidents.Remove(evento);
             await dc.SaveChangesAsync();
             return new ObjectResult("successful") { StatusCode = 200 };
         }

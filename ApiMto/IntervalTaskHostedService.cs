@@ -21,7 +21,7 @@ namespace ApiMto
         public Task StartAsync(CancellationToken cancellationToken)
         {
             //Check(null);
-           _timer = new Timer(Check, null, TimeSpan.Zero, TimeSpan.FromSeconds(300));
+           //_timer = new Timer(Check, null, TimeSpan.Zero, TimeSpan.FromSeconds(300));
             
 
             return Task.CompletedTask;
@@ -51,7 +51,7 @@ namespace ApiMto
                foreach(Server sr in srv)
                 {
                    
-                        if (sr.BrandId == 1)
+                        if (sr.Brand.Name == "Hikvision")
                         {
                             if (sr.PortAnalogo == 0)
                             {
@@ -71,7 +71,7 @@ namespace ApiMto
                                 deviceOn = result;
 
                             }
-                            if (sr.PortAnalogo > 0 && sr.CanalesIP > 0 && deviceOn)
+                            if (sr.PortAnalogo > 0 && sr.ChannelIP > 0 && deviceOn)
                             {
                                 var uri = "http://" + sr.IpAddress + "/ISAPI/ContentMgmt/InputProxy/channels/status";
                                 var node = "InputProxyChannelStatus";
@@ -81,17 +81,17 @@ namespace ApiMto
                             }
 
                         }
-                        if (sr.BrandId == 2)
+                        if (sr.Brand.Name == "Vivotek")
                         {
 
                             foreach (var cam in sr.Cameras)
                             {
                                 var uri = "";
-                                if (cam.BrandId == 2)
+                                if (cam.Brand.Name == "Vivotek")
                                 {
                                     uri = "http://" + cam.IpAddress + "/cgi-bin/viewer/getparam.cgi?system_hostname&system_info";
                                 }
-                                if (cam.BrandId == 6)
+                                if (cam.Brand.Name == "Geovision")
                                 {
                                     uri = "http://" + cam.IpAddress + "/VideoServerSPN.xml";
                                 }
@@ -139,7 +139,7 @@ namespace ApiMto
                     {
                         Console.WriteLine("Error NVR "+ cam.Id);
                         updateDevice(cam, false);
-                        addLog(cam, "Error NVR", false);
+                        addLog(cam, "OffLine (Error NVR)", false);
                         addEvent(cam, "Error NVR");
                     }
                     return false;
@@ -233,12 +233,12 @@ namespace ApiMto
             using (var scope = serviceProvider.CreateScope())
             {
                 var scopedService = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-                Log log = new Log { CameraId = cam.Id, Evento = msg, UsuarioId = 1, Type = type };
+                Log log = new Log { DeviceId = cam.Id, Message = msg, UserId = 1, Type = type, logType="System" };
                 var logCamera = await scopedService.LogApplication.FindByCameraId(cam.Id);
                 if (logCamera == null) await scopedService.LogApplication.Add(log);
                 if (logCamera != null)
                 {
-                    if (logCamera.Type != false) await scopedService.LogApplication.Add(log);
+                    if (logCamera.Type != log.Type) await scopedService.LogApplication.Add(log);
                 }
             }
 
@@ -248,12 +248,12 @@ namespace ApiMto
             using (var scope = serviceProvider.CreateScope())
             {
                 var scopedService = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-                Evento evento = new Evento { CameraId = cam.Id, Comment = msg };
-                var eventCam = await scopedService.EventoApplication.FindByCam(cam.Id);
+                Incident evento = new Incident { CameraId = cam.Id, Comment = msg };
+                var eventCam = await scopedService.IncidentApplication.FindByCam(cam.Id);
                 if (eventCam == null)
                 {
 
-                    await scopedService.EventoApplication.Add(evento);
+                    await scopedService.IncidentApplication.Add(evento);
                 }
             }
 
@@ -263,8 +263,8 @@ namespace ApiMto
             using (var scope = serviceProvider.CreateScope())
             {
                 var scopedService = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-                var evento = await scopedService.EventoApplication.FindByCam(cam.Id);
-                if(evento != null) await scopedService.EventoApplication.Delete(evento);
+                var evento = await scopedService.IncidentApplication.FindByCam(cam.Id);
+                if(evento != null) await scopedService.IncidentApplication.Delete(evento);
             }
 
         }

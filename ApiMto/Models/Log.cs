@@ -6,12 +6,12 @@ namespace ApiMto.Models
     {
         [Key]
         public int Id { get; set; }
-        public string Evento { get; set; }
+        public string Message { get; set; }
+        public string logType { get; set; }
         public DateTime Date { get; set; }
-        public int UsuarioId { get; set; }
-        public Usuario? Usuario { get; set; }
-        public int CameraId { get; set; }
-        public Camera? Camera { get; set; }
+        public int UserId { get; set; }
+        public User? User { get; set; }
+        public string DeviceId { get; set; }
         public bool Type { get; set; }
     }
 }

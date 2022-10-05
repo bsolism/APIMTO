@@ -17,26 +17,26 @@ namespace ApiMto.Controllers
         {
             this.uow = uow;
         }
-        [HttpGet("server/pdf/{id}")]
-        public async Task<IActionResult> GetPdfSrvId(int id)
-        {
-            var data = await uow.DataSheetApplication.FindByServerId(id);
-            if (data.StatusCode == 500)
-            {
-                return BadRequest(data.Value);
-            }
-            return Ok(data.Value);
-        }
-        [HttpGet("camera/pdf/{id}")]
-        public async Task<IActionResult> GetPdfCamId(int id)
-        {
-            var data = await uow.DataSheetApplication.FindByCameraId(id);
-            if (data.StatusCode == 500)
-            {
-                return BadRequest(data.Value);
-            }
-            return Ok(data.Value);
-        }
+        //[HttpGet("server/pdf/{id}")]
+        //public async Task<IActionResult> GetPdfSrvId(string id)
+        //{
+        //    var data = await uow.DataSheetApplication.FindById(id);
+        //    if (data.StatusCode == 500)
+        //    {
+        //        return BadRequest(data.Value);
+        //    }
+        //    return Ok(data.Value);
+        //}
+        //[HttpGet("camera/pdf/{id}")]
+        //public async Task<IActionResult> GetPdfCamId(string id)
+        //{
+        //    var data = await uow.DataSheetApplication.FindByCameraId(id);
+        //    if (data.StatusCode == 500)
+        //    {
+        //        return BadRequest(data.Value);
+        //    }
+        //    return Ok(data.Value);
+        //}
         [HttpPost("info")]
         [Produces("application/xml")]
         public async Task<IActionResult> HikvisionInfo(Credentials credential)
@@ -70,8 +70,12 @@ namespace ApiMto.Controllers
         [Produces("application/xml")]
         public async Task<IActionResult> HikvisionTime(Credentials credential)
         {
+            Console.WriteLine(credential.Password);
             var uri = "http://" + credential.IpAddress + "/ISAPI/System/time";
             var PassDecod = EncodingPass.DecryptPass(credential.Password).Split("|");
+            Console.WriteLine(credential.Name);
+            Console.WriteLine(PassDecod[1]);
+            Console.WriteLine(uri);
             var response = await uow.DeviceApplication.GetDevice(uri, credential.Name, PassDecod[1]);
             if (response == null) return NotFound("No se estableció conexión");
             return response;
@@ -129,6 +133,26 @@ namespace ApiMto.Controllers
 
 
         }
+        [HttpPut("infoOsd")]
+        [Produces("application/xml")]
+        public async Task<IActionResult> updateInfoOSD(Camera cam)
+        {
+            var channel = (cam.Type == "Analoga") ? cam.PortChannel : 1;
+            string xml = "<?xml version='1.0' encoding='UTF-8' ?>" +
+                "<VideoInputChannel version='2.0' xmlns='http://www.hikvision.com/ver20/XMLSchema'>" +
+                "<id>"+channel+"</id> " +
+                "<inputPort>"+channel+"</inputPort>" +
+                "<videoInputEnabled>true</videoInputEnabled>"+
+                "<name>" +cam.Name+"</name>"+
+                "</VideoInputChannel>";
+            var uri = "http://" + cam.IpAddress + "/ISAPI/System/Video/inputs/channels/"+channel;
+            //XDocument xd = XDocument.Parse(xml);
+            HttpContent content = new StringContent(xml.ToString(), Encoding.UTF8, "application/xml");
+            var PassDecod = EncodingPass.DecryptPass(cam.Password).Split("|");
+            return await uow.DeviceApplication.Update(uri, cam.User, PassDecod[1], content);
+
+
+        }
         [HttpPost("channels")]
         [Produces("application/xml")]
         public async Task<IActionResult> HikvisionStatusChannel(Credentials credential)
@@ -170,6 +194,7 @@ namespace ApiMto.Controllers
             }
             var credCache = new CredentialCache();
             var PassDecod = EncodingPass.DecryptPass(pass).Split("|");
+            Console.WriteLine(uri+" "+user+" "+ PassDecod[1]);
             credCache.Add(new Uri(uri), "digest", new NetworkCredential(user, PassDecod[1]));
             HttpClient client = new HttpClient(new HttpClientHandler { Credentials = credCache });
             var response = await client.GetAsync(uri);
@@ -178,6 +203,23 @@ namespace ApiMto.Controllers
                 credCache.Add(new Uri(uri), "basic", new NetworkCredential(user, PassDecod[1]));
                 client = new HttpClient(new HttpClientHandler { Credentials = credCache });
                 response = await client.GetAsync(uri);
+            }
+            if (!response.IsSuccessStatusCode)
+            {
+                uri = "http://" + camera.IpAddress + "/ISAPI/Streaming/channels/101/picture";
+                credCache.Add(new Uri(uri), "digest", new NetworkCredential(user, PassDecod[1]));
+                client = new HttpClient(new HttpClientHandler { Credentials = credCache });
+                response = await client.GetAsync(uri);
+            }
+            if (!response.IsSuccessStatusCode)
+            {
+                credCache.Add(new Uri(uri), "basic", new NetworkCredential(user, PassDecod[1]));
+                client = new HttpClient(new HttpClientHandler { Credentials = credCache });
+                response = await client.GetAsync(uri);
+            }
+            if (!response.IsSuccessStatusCode)
+            {
+                return BadRequest(response.ReasonPhrase);
             }
             byte[] content = await response.Content.ReadAsByteArrayAsync();
             return File(content, "image/jpeg");

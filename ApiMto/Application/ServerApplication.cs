@@ -27,7 +27,11 @@ namespace ApiMto.Application
         {
             return await dc.Servers.Include(x => x.Cameras).Include(x => x.Brand).Where(x=> x.Retired==false).ToListAsync();
         }
-        public async Task<Server> FindById(int id)
+        public async Task<IEnumerable<Server>> GetAll()
+        {
+            return await dc.Servers.ToListAsync();
+        }
+        public async Task<Server> FindById(string id)
         {
             var data = await dc.Servers.Include(x => x.Cameras).FirstOrDefaultAsync(x => x.Id == id);
             if (data != null)
@@ -48,16 +52,16 @@ namespace ApiMto.Application
         public async Task<ObjectResult> Add(ServerDto serverDto)
         {
             var server = mapper.Map<Server>(serverDto);
-
             var find = FindBySerial(server);
-
             if (find.Result == null)
             {
+                var code = server.Id + "-" + (GetAll().Result.Count() + 1).ToString("D" + 4);
+                server.Id= code;
                 dc.Servers.Add(server);
                 await dc.SaveChangesAsync();
                 var srvAg = new SrvAg
                 {
-                    AgenciaId = serverDto.agenciaId,
+                    AgencyId = serverDto.AgencyId,
                     ServerId = server.Id
                 };
                 dc.SrvAgs.Add(srvAg);
@@ -68,13 +72,13 @@ namespace ApiMto.Application
             return new ObjectResult("Server Already") { StatusCode = 500 };
 
         }
-        public async Task<ObjectResult> AddFile(ServerDataSheetDto sdsd)
+        public async Task<ObjectResult> AddFile(DataSheetDto sdsd)
         {
             if (sdsd.File != null)
             {
                 var file = unitOf.HelperDomain.UploadFilePdf(sdsd.File);
-                var serverDataSheet = new ServerDataSheet { DataSheetName = file, ServerId = sdsd.ServerId };
-                dc.ServerDataSheets.Add(serverDataSheet);
+                var dataSheet = new DataSheet { DataSheetName = file, DeviceId = sdsd.DeviceId };
+                dc.DataSheets.Add(dataSheet);
                 await dc.SaveChangesAsync();
 
             }
@@ -82,7 +86,7 @@ namespace ApiMto.Application
 
             return new ObjectResult(sdsd);
         }
-        public async Task<ObjectResult> Update(int id, Server server)
+        public async Task<ObjectResult> Update(string id, Server server)
         {
 
             dc.Entry(server).State = EntityState.Modified;

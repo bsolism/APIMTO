@@ -2,7 +2,7 @@
 
 namespace ApiMto.Models
 {
-    public class Usuario
+    public class User
     {
         [Key]
         public int Id { get; set; }

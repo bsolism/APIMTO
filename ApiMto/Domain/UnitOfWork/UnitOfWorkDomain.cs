@@ -20,5 +20,7 @@ namespace ApiMto.Domain.UnitOfWork
             new HelperDomain(environment);
         public IDeviceDomain DeviceDomain =>
             new DeviceDomain(dc);
+        public IPanasonicDomain PanasonicDomain =>
+            new PanasonicDomain();
     }
 }

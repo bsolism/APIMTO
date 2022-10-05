@@ -22,15 +22,15 @@ namespace ApiMto.Controllers
         }
 
         [HttpGet("{id}")]
-        public Task<Server> GetById(int id)
+        public Task<Server> GetById(string id)
         {
             var pet = uow.ServerApplication.FindById(id);
             return pet;
         }
         [HttpPost]
-        public async Task<IActionResult> Add(ServerDto serverDto)
+        public async Task<IActionResult> Add(ServerDto server)
         {
-            var data = await uow.ServerApplication.Add(serverDto);
+            var data = await uow.ServerApplication.Add(server);
             if (data.StatusCode == 500)
             {
                 return BadRequest(data.Value);
@@ -38,9 +38,9 @@ namespace ApiMto.Controllers
             return Ok(data.Value);
         }
         [HttpPost("file")]
-        public async Task<IActionResult> AddFile([FromForm] ServerDataSheetDto serverDataSheetDto)
+        public async Task<IActionResult> AddFile([FromForm] DataSheetDto dataSheetDto)
         {
-            var data = await uow.ServerApplication.AddFile(serverDataSheetDto);
+            var data = await uow.ServerApplication.AddFile(dataSheetDto);
             if (data.StatusCode == 500)
             {
                 return BadRequest(data.Value);
@@ -49,7 +49,7 @@ namespace ApiMto.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Server server)
+        public async Task<IActionResult> Update(string id, Server server)
         {
             var user = await uow.ServerApplication.Update(id, server);
             if (user.StatusCode == 500)

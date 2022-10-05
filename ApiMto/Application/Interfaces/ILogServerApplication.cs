@@ -7,7 +7,7 @@ namespace ApiMto.Application.Interfaces
     {
         Task<IEnumerable<LogServer>> Get();
         Task<LogServer> FindById(int id);
-        Task<IEnumerable<LogServer>> FindByServer(int id);
+        Task<IEnumerable<LogServer>> FindByServer(string id);
         Task<ObjectResult> Add(LogServer LogsServer);
         Task<ObjectResult> Update(int id, LogServer LogsServer);
     }

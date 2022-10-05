@@ -7,8 +7,8 @@ namespace ApiMto.Application.Interfaces
     {
         Task<IEnumerable<Log>> Get();
         Task<Log> FindById(int id);
-        Task<Log> FindByCameraId(int id);
-        Task<IEnumerable<Log>> FindByCam(int id);
+        Task<Log> FindByCameraId(string id);
+        Task<IEnumerable<Log>> FindByDevice(string id);
         Task<ObjectResult> Add(Log Logs);
         Task<ObjectResult> Update(int id, Log Logs);
     }

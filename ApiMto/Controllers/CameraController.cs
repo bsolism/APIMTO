@@ -28,13 +28,13 @@ namespace ApiMto.Controllers
         }
 
         [HttpGet("{id}")]
-        public Task<Camera> GetById(int id)
+        public Task<Camera> GetById(string id)
         {
             var data = uow.CameraApplication.FindById(id);
             return data;
         }
         [HttpGet("channel/{id}/server/{serverId}")]
-        public Task<Camera> GetByChannel(int id, int serverId)
+        public Task<Camera> GetByChannel(int id, string serverId)
         {
             var data = uow.CameraApplication.FindByChannel(id, serverId);
             return data;
@@ -87,16 +87,16 @@ namespace ApiMto.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Camera camera)
+        public async Task<IActionResult> Update(string id, Camera camera)
         {
-            var user = await uow.CameraApplication.Update(id, camera);
-            if (user.StatusCode == 500)
+            var data = await uow.CameraApplication.Update(id, camera);
+            if (data.StatusCode == 500)
             {
-                return BadRequest(user.Value);
+                return BadRequest(data.Value);
 
             }
 
-            return Ok(user.Value);
+            return Ok(data.Value);
         }
     }
 }

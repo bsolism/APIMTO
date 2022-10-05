@@ -8,7 +8,7 @@ namespace ApiMto.Models
     {
         [Key]
         public int Id { get; set; }
-        public string name { get; set; }
+        public string Name { get; set; }
        [IgnoreDataMember]
         public List<Server>? Servers { get; set; }
         [IgnoreDataMember]

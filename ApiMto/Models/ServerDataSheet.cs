@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public string DataSheetName { get; set; }
-        public int ServerId { get; set; }
+        public string ServerId { get; set; }
         public Server? Server { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace ApiMto.Context
     {
         public void Configure(EntityTypeBuilder<LogServer> builder)
         {
-            builder.ToTable("LogServer", "dbo");
+            builder.ToTable("LogServers", "dbo");
             builder.Property(e => e.Date).HasDefaultValueSql("getdate()");
 
 

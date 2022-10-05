@@ -4,31 +4,31 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ApiMto.Controllers
 {
-    public class AgenciaController : BaseController
+    public class AgencyController : BaseController
     {
         private readonly IUnitOfWork uow;
 
-        public AgenciaController(IUnitOfWork uow)
+        public AgencyController(IUnitOfWork uow)
         {
             this.uow = uow;
         }
         [HttpGet]
-        public Task<IEnumerable<Agencia>> Get()
+        public Task<IEnumerable<Agency>> Get()
         {
 
-            return uow.AgenciaApplication.Get();
+            return uow.AgencyApplication.Get();
         }
 
         [HttpGet("{id}")]
-        public Task<Agencia> GetById(int id)
+        public Task<Agency> GetById(string id)
         {
-            var pet = uow.AgenciaApplication.FindById(id);
+            var pet = uow.AgencyApplication.FindById(id);
             return pet;
         }
         [HttpPost]
-        public async Task<IActionResult> Add(Agencia agencia)
+        public async Task<IActionResult> Add(Agency agency)
         {
-            var data = await uow.AgenciaApplication.Add(agencia);
+            var data = await uow.AgencyApplication.Add(agency);
             if (data.StatusCode == 500)
             {
                 return BadRequest(data.Value);
@@ -36,9 +36,9 @@ namespace ApiMto.Controllers
             return Ok(data.Value);
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Agencia agencia)
+        public async Task<IActionResult> Update(int id, Agency agency)
         {
-            var user = await uow.AgenciaApplication.Update(id, agencia);
+            var user = await uow.AgencyApplication.Update(id, agency);
             if (user.StatusCode == 500)
             {
                 return BadRequest(user.Value);

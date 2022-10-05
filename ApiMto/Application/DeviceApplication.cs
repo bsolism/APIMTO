@@ -16,12 +16,12 @@ namespace ApiMto.Application
         {
             this.uow = uow;
         }
-        public async Task<IActionResult> GetDevice(string uri, string user, string pass)
-        {          
-           
+        public async Task<ContentResult> GetDevice(string uri, string user, string pass)
+        {
+
             try
             {
-            var credCache = new CredentialCache();
+                var credCache = new CredentialCache();
             credCache.Add(new Uri(uri), "Digest", new NetworkCredential(user, pass));
             HttpClient client = new HttpClient(new HttpClientHandler { Credentials = credCache });
 
@@ -32,11 +32,11 @@ namespace ApiMto.Application
                     client = new HttpClient(new HttpClientHandler { Credentials = credCache });
                     response = await client.GetAsync(uri);
                 }
-                if (!response.IsSuccessStatusCode) return new ContentResult { Content = "User / Password Incorrect", StatusCode = 401 };
+                if (!response.IsSuccessStatusCode) return new ContentResult { Content = response.ReasonPhrase, StatusCode = 401 };
 
                 return new ContentResult
                 {
-                    ContentType = "application/xml",
+                    //ContentType = "application/xml",
                     Content = await response.Content.ReadAsStringAsync(),
                     StatusCode = 200
 
@@ -118,19 +118,52 @@ namespace ApiMto.Application
         {
            
             var credCache = new CredentialCache();
-            credCache.Add(new Uri(uri), "Digest", new NetworkCredential(user, pass));
+            credCache.Add(new Uri(uri), "digest", new NetworkCredential(user, pass));
             HttpClient client = new HttpClient(new HttpClientHandler { Credentials = credCache });
             var response = await client.PutAsync(uri, content);
             if (!response.IsSuccessStatusCode)
             {
-                credCache.Add(new Uri(uri), "Basic", new NetworkCredential(user, pass));
+                credCache.Add(new Uri(uri), "basic", new NetworkCredential(user, pass));
                 client = new HttpClient(new HttpClientHandler { Credentials = credCache });
-                response = await client.GetAsync(uri);
+                response = await client.PutAsync(uri, content);
             }
+            if (!response.IsSuccessStatusCode)
+            {
+               return new ContentResult { Content = response.ReasonPhrase, StatusCode = 400 };
+            }
+
+
             return new ContentResult
             {
                 ContentType = "application/xml",
                 Content = await response.Content.ReadAsStringAsync(),
+                StatusCode = 200
+
+            };
+        }
+        public async Task<IActionResult> PostDevice(string uri, string user, string pass, HttpContent content)
+        {
+
+            var credCache = new CredentialCache();
+            credCache.Add(new Uri(uri), "digest", new NetworkCredential(user, pass));
+            HttpClient client = new HttpClient(new HttpClientHandler { Credentials = credCache });
+            var response = await client.PostAsync(uri, content);
+            if (!response.IsSuccessStatusCode)
+            {
+                credCache.Add(new Uri(uri), "basic", new NetworkCredential(user, pass));
+                client = new HttpClient(new HttpClientHandler { Credentials = credCache });
+                response = await client.PostAsync(uri, content);
+            }
+            if (!response.IsSuccessStatusCode)
+            {
+                return new ContentResult { Content = "Bad Request", StatusCode = 400 };
+            }
+
+
+            return new ContentResult
+            {
+                
+                Content = "Sucess",
                 StatusCode = 200
 
             };

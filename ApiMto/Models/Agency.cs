@@ -2,13 +2,13 @@
 
 namespace ApiMto.Models
 {
-    public class Agencia
+    public class Agency
     {
         [Key]
-        public int Id { get; set; }
-        public string Nombre { get; set; }
-        public string Ciudad { get; set; }
-        public string Direccion { get; set; }
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string City { get; set; }
+        public string Address { get; set; }
         public List<SrvAg>? SrvAg { get; set; }
         public List<Camera>? Cameras { get; set; }
        

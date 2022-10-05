@@ -1,6 +1,7 @@
 ﻿
 
 using ApiMto.Application.UnitOfWork;
+using ApiMto.Dto;
 using ApiMto.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,14 +16,24 @@ namespace ApiMto.Controllers
             this.uow = uow;
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(string id)
         {
-            var data = await uow.DataSheetApplication.FindByServerId(id);
-            if (data.StatusCode == 500)
+            var data = await uow.DataSheetApplication.FindById(id);
+            if (data == null)
             {
-                return BadRequest(data.Value);
+                return BadRequest(data);
             }
-            return Ok(data.Value);
+            return Ok(data);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddFile([FromForm] DataSheetDto dataSheetDto)
+        {
+            var data = await uow.DataSheetApplication.AddFile(dataSheetDto);
+            if (data == null)
+            {
+                return BadRequest(data);
+            }
+            return Ok(data);
         }
     }
 }

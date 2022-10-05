@@ -20,11 +20,11 @@ namespace ApiMto.Application
 
         public async Task<IEnumerable<Log>> Get()
         {
-            return await dc.Logs.Include(x=> x.Usuario).ToListAsync();
+            return await dc.Logs.Include(x=> x.User).ToListAsync();
         }
-        public async Task<IEnumerable<Log>> FindByCam(int id)
+        public async Task<IEnumerable<Log>> FindByDevice(string id)
         {
-            var data = await dc.Logs.Include(x=> x.Usuario).Where(x=> x.CameraId==id).ToListAsync();
+            var data = await dc.Logs.Include(x=> x.User).Where(x=> x.DeviceId==id).ToListAsync();
             if (data != null)
             {
                 return data;
@@ -40,9 +40,9 @@ namespace ApiMto.Application
             }
             return null;
         }
-        public async Task<Log> FindByCameraId(int id)
+        public async Task<Log> FindByCameraId(string id)
         {
-            var data = await dc.Logs.OrderByDescending(x=> x.Id).FirstOrDefaultAsync(x=> x.CameraId== id);
+            var data = await dc.Logs.OrderByDescending(x=> x.Id).FirstOrDefaultAsync(x=> x.DeviceId== id && x.logType=="System");
             if (data != null)
             {
                 return data;

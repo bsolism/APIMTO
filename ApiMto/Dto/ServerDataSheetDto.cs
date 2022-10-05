@@ -6,7 +6,7 @@ namespace ApiMto.Dto
     {
        
         public string DataSheetName { get; set; }
-        public int ServerId { get; set; }
+        public string ServerId { get; set; }
         public IFormFile File { get; set; }
 
     }

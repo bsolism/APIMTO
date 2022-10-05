@@ -8,11 +8,11 @@ namespace ApiMto.Application.Interfaces
     {
         Task<IEnumerable<Camera>> Get();
         Task<IEnumerable<Camera>> GetOnly();
-        Task<Camera> FindById(int id);
-        Task<Camera> FindByChannel(int id, int serverId);
+        Task<Camera> FindById(string id);
+        Task<Camera> FindByChannel(int id, string serverId);
         Task<ObjectResult> Add(Camera camera);
         Task<ObjectResult> AddFile(CameraDataSheetDto sdsd);
-        Task<ObjectResult> Update(int id, Camera camera);
+        Task<ObjectResult> Update(string id, Camera camera);
 
 
     }

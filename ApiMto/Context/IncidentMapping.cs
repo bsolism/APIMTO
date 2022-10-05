@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ApiMto.Context
 {
-    public class EventoMapping : IEntityTypeConfiguration<Evento>
+    public class IncidentMapping : IEntityTypeConfiguration<Incident>
     {
-        public void Configure(EntityTypeBuilder<Evento> builder)
+        public void Configure(EntityTypeBuilder<Incident> builder)
         {
-            builder.ToTable("Evento", "dbo");
+            builder.ToTable("Incidents", "dbo");
             builder.Property(e => e.Date).HasDefaultValueSql("getdate()");
 
 

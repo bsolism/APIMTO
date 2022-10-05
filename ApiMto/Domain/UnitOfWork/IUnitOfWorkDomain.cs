@@ -7,5 +7,6 @@ namespace ApiMto.Domain.UnitOfWork
         ICameraDomain CameraDomain { get; }
         IHelperDomain HelperDomain { get; }
         IDeviceDomain DeviceDomain { get; }
+        IPanasonicDomain PanasonicDomain { get; }
     }
 }

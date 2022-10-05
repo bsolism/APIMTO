@@ -26,7 +26,7 @@ namespace ApiMto.Controllers
             return log;
         }
         [HttpGet("server/{id}")]
-        public Task<IEnumerable<LogServer>> GetByServerId(int id)
+        public Task<IEnumerable<LogServer>> GetByServerId(string id)
         {
             var LogServer = uow.LogServerApplication.FindByServer(id);
             return LogServer;

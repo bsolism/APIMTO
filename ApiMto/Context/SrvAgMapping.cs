@@ -8,11 +8,11 @@ namespace ApiMto.Context
     {
         public void Configure(EntityTypeBuilder<SrvAg> builder)
         {
-            builder.ToTable("SrvAg", "dbo");
+            builder.ToTable("SrvAgs", "dbo");
             builder.HasKey(x => x.Id);
             builder.Property<int>(x => x.Id).UseIdentityColumn().ValueGeneratedOnAdd();
-            builder.Property<int>(x => x.AgenciaId).HasColumnType("int");
-            builder.Property<int>(x => x.ServerId).HasColumnType("int");
+            builder.Property<string>(x => x.AgencyId).HasColumnType("nvarchar(MAX)");
+            builder.Property<string>(x => x.ServerId).HasColumnType("nvarchar(MAX)");
         }
     }
 }

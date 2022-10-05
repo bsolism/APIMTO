@@ -25,10 +25,10 @@ namespace ApiMto.Controllers
             var log = uow.LogApplication.FindById(id);
             return log;
         }
-        [HttpGet("camera/{id}")]
-        public Task<IEnumerable<Log>> GetByCameraId(int id)
+        [HttpGet("device/{id}")]
+        public Task<IEnumerable<Log>> GetByDeviceId(string id)
         {
-            var Log = uow.LogApplication.FindByCam(id);
+            var Log = uow.LogApplication.FindByDevice(id);
             return Log;
         }
         [HttpPost]

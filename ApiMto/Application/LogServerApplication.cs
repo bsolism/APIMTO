@@ -20,11 +20,11 @@ namespace ApiMto.Application
 
         public async Task<IEnumerable<LogServer>> Get()
         {
-            return await dc.LogServers.Include(x => x.Usuario).ToListAsync();
+            return await dc.LogServers.Include(x => x.User).ToListAsync();
         }
-        public async Task<IEnumerable<LogServer>> FindByServer(int id)
+        public async Task<IEnumerable<LogServer>> FindByServer(string id)
         {
-            var data = await dc.LogServers.Include(x => x.Usuario).Where(x => x.ServerId == id).ToListAsync();
+            var data = await dc.LogServers.Include(x => x.User).Where(x => x.ServerId == id).ToListAsync();
             if (data != null)
             {
                 return data;
