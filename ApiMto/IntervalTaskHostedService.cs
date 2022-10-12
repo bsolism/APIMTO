@@ -20,8 +20,8 @@ namespace ApiMto
         }     
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            //Check(null);
-           //_timer = new Timer(Check, null, TimeSpan.Zero, TimeSpan.FromSeconds(300));
+           //Check(null);
+           _timer = new Timer(Check, null, TimeSpan.Zero, TimeSpan.FromSeconds(300));
             
 
             return Task.CompletedTask;
@@ -137,7 +137,6 @@ namespace ApiMto
                    
                     foreach (var cam in sr.Cameras)
                     {
-                        Console.WriteLine("Error NVR "+ cam.Id);
                         updateDevice(cam, false);
                         addLog(cam, "OffLine (Error NVR)", false);
                         addEvent(cam, "Error NVR");
@@ -168,7 +167,6 @@ namespace ApiMto
                                 {
                                     if (cam.PortChannel == Convert.ToInt32(channel))
                                     {
-                                        Console.WriteLine("Cam Offline " + cam.Id);
                                         updateDevice(cam, false);
                                         addLog(cam, "OffLine", false);
                                         addEvent(cam, "OffLine");

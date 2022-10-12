@@ -70,12 +70,8 @@ namespace ApiMto.Controllers
         [Produces("application/xml")]
         public async Task<IActionResult> HikvisionTime(Credentials credential)
         {
-            Console.WriteLine(credential.Password);
             var uri = "http://" + credential.IpAddress + "/ISAPI/System/time";
             var PassDecod = EncodingPass.DecryptPass(credential.Password).Split("|");
-            Console.WriteLine(credential.Name);
-            Console.WriteLine(PassDecod[1]);
-            Console.WriteLine(uri);
             var response = await uow.DeviceApplication.GetDevice(uri, credential.Name, PassDecod[1]);
             if (response == null) return NotFound("No se estableció conexión");
             return response;

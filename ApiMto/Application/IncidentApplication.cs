@@ -16,7 +16,7 @@ namespace ApiMto.Application
         }
         public async Task<IEnumerable<Incident>> Get()
         {
-            return await dc.Incidents.Include(x=> x.Camera).ThenInclude(x=> x.Server).ToListAsync();
+            return await dc.Incidents.Include(x=> x.Camera).ThenInclude(x=> x.Server).ThenInclude(x=> x.Brand).ToListAsync();
         }
         public async Task<Incident> FindByCam(string id)
         {
