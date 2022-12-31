@@ -29,11 +29,13 @@ namespace ApiMto.Application.UnitOfWork
             new DeviceApplication(uowd);
         public ILogApplication LogApplication =>
           new LogApplication(dc, uowd);
-        public ILogServerApplication LogServerApplication =>
-         new LogServerApplication(dc, uowd);
+      
         public IDataSheetApplication DataSheetApplication =>
         new DataSheetApplication(dc, uowd);
-        public IIncidentApplication IncidentApplication =>
-        new IncidentApplication(dc);
+        
+        public IHikvisionApplication HikvisionApplication =>
+            new HikvisionApplication();
+        public IVivotekApplication VivotekApplication =>
+            new VivotekApplication();
     }
 }

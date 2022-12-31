@@ -12,15 +12,11 @@ namespace ApiMto.Context
         public DbSet<SrvAg> SrvAgs { get; set; }
         public DbSet<User> Users { get; set; }  
         public DbSet<Log> Logs { get; set; }
-        public DbSet<LogServer> LogServers { get; set; }
-        public DbSet<ServerDataSheet> ServerDataSheets { get; set; }
-        public DbSet<CameraDataSheet> CameraDataSheets { get; set; }
-        public DbSet<Incident> Incidents { get; set; }
         public DbSet<DataSheet> DataSheets { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-460R51L\SQLEXPRESS;Initial Catalog=DeviceMto; User Id=mto; Password=mto123;Trusted_Connection=false; ConnectRetryCount=0");
+            optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-460R51L\SQLEXPRESS;Initial Catalog=DeviceMtoV2; User Id=mto; Password=mto123;Trusted_Connection=false; ConnectRetryCount=0");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,8 +24,6 @@ namespace ApiMto.Context
             modelBuilder.ApplyConfiguration(new ServerMapping());
             modelBuilder.ApplyConfiguration(new CameraMapping());
             modelBuilder.ApplyConfiguration(new LogMapping());
-            modelBuilder.ApplyConfiguration(new LogServerMapping());
-            modelBuilder.ApplyConfiguration(new IncidentMapping());
             base.OnModelCreating(modelBuilder);
         }
     }

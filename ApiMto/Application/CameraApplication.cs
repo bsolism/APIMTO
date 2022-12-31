@@ -68,31 +68,27 @@ namespace ApiMto.Application
             }
             return null;
         }
-        public async Task<ObjectResult> AddFile(CameraDataSheetDto sdsd)
-        {
-            if (sdsd.File != null)
-            {
-                var file = uowd.HelperDomain.UploadFilePdf(sdsd.File);
-                var cameraDataSheet = new CameraDataSheet { DataSheetName = file, CameraId = sdsd.CameraId };
-                dc.CameraDataSheets.Add(cameraDataSheet);
-                await dc.SaveChangesAsync();
+        //public async Task<ObjectResult> AddFile(CameraDataSheetDto sdsd)
+        //{
+        //    if (sdsd.File != null)
+        //    {
+        //        //var file = uowd.HelperDomain.UploadFilePdf(sdsd.File);
+        //        //var cameraDataSheet = new CameraDataSheet { DataSheetName = file, CameraId = sdsd.CameraId };
+        //        //dc.CameraDataSheets.Add(cameraDataSheet);
+        //        //await dc.SaveChangesAsync();
 
-            }
+        //    }
 
 
-            return new ObjectResult(sdsd);
-        }
+        //    return new ObjectResult(sdsd);
+        //}
         public async Task<ObjectResult> Add(Camera camera)
         {
             var find = FindBySerial(camera);
-          //  var srvAg = await dc.SrvAgs.AsNoTracking().FirstOrDefaultAsync(x => x.AgencyId == camera.AgencyId && x.ServerId == camera.ServerId);
-            if (find.Result == null)
+          if (find.Result == null)
             {
                 var code = camera.Id + "-" + (GetAll().Result.Count() + 1).ToString("D" + 4);
                 camera.Id = code;
-
-                //var passEnco = EncodingPass.EncryptPass(camera.SerialNumber + "|" + camera.Password);
-                //camera.Password = passEnco;
                 dc.Cameras.Add(camera);
                 await dc.SaveChangesAsync();
                 var srvAg = FindBySrvAg(camera);
@@ -103,11 +99,10 @@ namespace ApiMto.Application
                     await dc.SaveChangesAsync();
 
                 }
+                              
                 return new ObjectResult(camera) { StatusCode = 200 };
             }
             return new ObjectResult("Camera Already") { StatusCode= 500 };
-
-
         }
         public async Task<ObjectResult> Update(string id, Camera camera)
         {

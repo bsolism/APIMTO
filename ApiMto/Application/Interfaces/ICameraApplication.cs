@@ -11,7 +11,7 @@ namespace ApiMto.Application.Interfaces
         Task<Camera> FindById(string id);
         Task<Camera> FindByChannel(int id, string serverId);
         Task<ObjectResult> Add(Camera camera);
-        Task<ObjectResult> AddFile(CameraDataSheetDto sdsd);
+        //Task<ObjectResult> AddFile(CameraDataSheetDto sdsd);
         Task<ObjectResult> Update(string id, Camera camera);
 
 

@@ -27,14 +27,16 @@ namespace ApiMto.Domain.Domain
                 string url = Path.Combine(fichero, guidImagen);
                 try
                 {
-
-                File.CopyTo(new FileStream(url, FileMode.Create));
+                    Console.WriteLine("Entranto try");
+                    File.CopyTo(new FileStream(url, FileMode.Create));
                 }
                 catch (IOException)
                 {
+                    Console.WriteLine("estando a Catch");
+                    Console.WriteLine(guidImagen);
                     return guidImagen;
                 }
-
+                Console.WriteLine(guidImagen);
                 return guidImagen;
             }
 

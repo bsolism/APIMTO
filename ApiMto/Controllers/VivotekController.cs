@@ -26,21 +26,13 @@ namespace ApiMto.Controllers
             return response;
         }
         [HttpPost("image")]
-        public async Task<IActionResult> Image(Camera cred)
+        public async Task<IActionResult> Image(Camera camera)
         {
-            var uri = "http://" + cred.IpAddress + "/cgi-bin/viewer/video.jpg";
-            var credCache = new CredentialCache();
-            var PassDecod = EncodingPass.DecryptPass(cred.Password).Split("|");
-            credCache.Add(new Uri(uri), "digest", new NetworkCredential(cred.User, PassDecod[1]));
-            HttpClient client = new HttpClient(new HttpClientHandler { Credentials = credCache });
-            var response = await client.GetAsync(uri);
-            if (!response.IsSuccessStatusCode)
+            var content = await uow.VivotekApplication.GetImage(camera);
+            if (content == null)
             {
-                credCache.Add(new Uri(uri), "Basic", new NetworkCredential(cred.User, PassDecod[1]));
-                client = new HttpClient(new HttpClientHandler { Credentials = credCache });
-                response = await client.GetAsync(uri);
+               return BadRequest();
             }
-            byte[] content = await response.Content.ReadAsByteArrayAsync();
             return File(content, "image/jpeg");
         }
         [HttpPost("info")]

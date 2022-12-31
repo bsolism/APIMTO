@@ -30,9 +30,13 @@ namespace ApiMto.Models
         public bool Retired { get; set; }
         public DateTime DateInstallation{ get; set; }
         public DateTime DateBuy { get; set; }
+        public DateTime DateIncident { get; set; }
         public string? Note { get; set; }
         public int BrandId { get; set; }
         public Brand? Brand { get; set; }
+        public int? DataSheetId { get; set; }
+        public DataSheet? DataSheet { get; set; }        
+        public List<Log>? Log { get; set; }
         public string ServerId { get; set; }
         public Server? Server { get; set; }
         public string AgencyId { get; set; }

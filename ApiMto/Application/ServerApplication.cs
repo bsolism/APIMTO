@@ -25,7 +25,11 @@ namespace ApiMto.Application
         }
         public async Task<IEnumerable<Server>> Get()
         {
-            return await dc.Servers.Include(x => x.Cameras).Include(x => x.Brand).Where(x=> x.Retired==false).ToListAsync();
+            return await dc.Servers
+                .Include(x => x.Cameras.Where(x=> !x.Retired))
+                .ThenInclude(x=> x.Brand).Include(x => x.Brand)
+                .Where(x=> !x.Retired )
+                .ToListAsync();
         }
         public async Task<IEnumerable<Server>> GetAll()
         {
@@ -49,9 +53,9 @@ namespace ApiMto.Application
             }
             return null;
         }
-        public async Task<ObjectResult> Add(ServerDto serverDto)
+        public async Task<ObjectResult> Add(Server server)
         {
-            var server = mapper.Map<Server>(serverDto);
+            //var server = mapper.Map<Server>(serverDto);
             var find = FindBySerial(server);
             if (find.Result == null)
             {
@@ -61,11 +65,16 @@ namespace ApiMto.Application
                 await dc.SaveChangesAsync();
                 var srvAg = new SrvAg
                 {
-                    AgencyId = serverDto.AgencyId,
+                    AgencyId = server.AgencyId,
                     ServerId = server.Id
                 };
                 dc.SrvAgs.Add(srvAg);
+                
+
                 await dc.SaveChangesAsync();
+                var brand = await dc.Brands.FirstOrDefaultAsync(x=> x.Id== server.BrandId);
+                server.Brand = brand;
+
 
                 return new ObjectResult(server);
             }

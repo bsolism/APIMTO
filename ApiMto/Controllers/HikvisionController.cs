@@ -50,11 +50,21 @@ namespace ApiMto.Controllers
         }
         [HttpPost("capabilities")]
         [Produces("application/xml")]
-        public async Task<IActionResult> HikvisionCapabilities(Camera camera)
+        public async Task<IActionResult> HikvisionCapabilities(Credentials credential)
         {
-            var uri = "http://" + camera.IpAddress + "/ISAPI/Streaming/channels/101";
-            var PassDecod = EncodingPass.DecryptPass(camera.Password).Split("|");
-            var response = await uow.DeviceApplication.GetDevice(uri, camera.User, PassDecod[1]);
+            var uri = "http://" + credential.IpAddress + "/ISAPI/Streaming/channels/101";
+            var PassDecod = EncodingPass.DecryptPass(credential.Password).Split("|");
+            var response = await uow.DeviceApplication.GetDevice(uri, credential.Name, PassDecod[1]);
+            if (response == null) return NotFound("No se estableció conexión");
+            return response;
+        }
+        [HttpPost("generalInfo")]
+        [Produces("application/xml")]
+        public async Task<IActionResult> HikvisionGeneralInfo(Credentials credential)
+        {
+            var uri = "http://" + credential.IpAddress + "/ISAPI/ContentMgmt/Capabilities";
+            var PassDecod = EncodingPass.DecryptPass(credential.Password).Split("|");
+            var response = await uow.DeviceApplication.GetDevice(uri, credential.Name, PassDecod[1]);
             if (response == null) return NotFound("No se estableció conexión");
             return response;
         }
@@ -159,6 +169,16 @@ namespace ApiMto.Controllers
             if (response == null) return NotFound("No se estableció conexión");           
             return  response;
         }
+        [HttpPost("storage")]
+        [Produces("application/xml")]
+        public async Task<IActionResult> HikvisionStorage(Credentials credential)
+        {
+            var uri = "http://" + credential.IpAddress + "/ISAPI/ContentMgmt/Storage";
+            var PassDecod = EncodingPass.DecryptPass(credential.Password).Split("|");
+            var response = await uow.DeviceApplication.GetDevice(uri, credential.Name, PassDecod[1]);
+            if (response == null) return NotFound("No se estableció conexión");
+            return response;
+        }
         [HttpPost("channels/dvr")]
         [Produces("application/xml")]
         public async Task<IActionResult> HikvisionStatusChannelDvr(Credentials credential)
@@ -172,53 +192,8 @@ namespace ApiMto.Controllers
         [HttpPost("image")]
         public async Task<IActionResult> ImageHik(Camera camera)
         {
-            var uri = "";
-            var user="";
-            var pass="";
-            if (camera.Server != null)
-            {
-                uri = "http://" + camera.Server.IpAddress + "/ISAPI/Streaming/channels/" + camera.PortChannel + "01/picture";
-                user = camera.Server.User;
-                pass = camera.Server.Password;
-            }
-            else
-            {
-                uri = "http://" + camera.IpAddress + "/ISAPI/Streaming/channels/101/picture";
-                user= camera.User;
-                pass = camera.Password;
-
-            }
-            var credCache = new CredentialCache();
-            var PassDecod = EncodingPass.DecryptPass(pass).Split("|");
-            Console.WriteLine(uri+" "+user+" "+ PassDecod[1]);
-            credCache.Add(new Uri(uri), "digest", new NetworkCredential(user, PassDecod[1]));
-            HttpClient client = new HttpClient(new HttpClientHandler { Credentials = credCache });
-            var response = await client.GetAsync(uri);
-            if (!response.IsSuccessStatusCode)
-            {
-                credCache.Add(new Uri(uri), "basic", new NetworkCredential(user, PassDecod[1]));
-                client = new HttpClient(new HttpClientHandler { Credentials = credCache });
-                response = await client.GetAsync(uri);
-            }
-            if (!response.IsSuccessStatusCode)
-            {
-                uri = "http://" + camera.IpAddress + "/ISAPI/Streaming/channels/101/picture";
-                credCache.Add(new Uri(uri), "digest", new NetworkCredential(user, PassDecod[1]));
-                client = new HttpClient(new HttpClientHandler { Credentials = credCache });
-                response = await client.GetAsync(uri);
-            }
-            if (!response.IsSuccessStatusCode)
-            {
-                credCache.Add(new Uri(uri), "basic", new NetworkCredential(user, PassDecod[1]));
-                client = new HttpClient(new HttpClientHandler { Credentials = credCache });
-                response = await client.GetAsync(uri);
-            }
-            if (!response.IsSuccessStatusCode)
-            {
-                return BadRequest(response.ReasonPhrase);
-            }
-            byte[] content = await response.Content.ReadAsByteArrayAsync();
-            return File(content, "image/jpeg");
+            var content = uow.HikvisionApplication.GetImage(camera);
+            return File(content.Result, "image/jpeg");
         }
     }
 }

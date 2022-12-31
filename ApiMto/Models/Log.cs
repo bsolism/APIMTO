@@ -12,6 +12,8 @@ namespace ApiMto.Models
         public int UserId { get; set; }
         public User? User { get; set; }
         public string DeviceId { get; set; }
+        public List<Camera> Cameras { get; set; }
+        public List<Server> Servers { get; set; }
         public bool Type { get; set; }
     }
 }

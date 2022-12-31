@@ -28,7 +28,7 @@ namespace ApiMto.Controllers
             return pet;
         }
         [HttpPost]
-        public async Task<IActionResult> Add(ServerDto server)
+        public async Task<IActionResult> Add(Server server)
         {
             var data = await uow.ServerApplication.Add(server);
             if (data.StatusCode == 500)

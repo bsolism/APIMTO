@@ -20,10 +20,8 @@ namespace ApiMto
         }     
         public Task StartAsync(CancellationToken cancellationToken)
         {
-           //Check(null);
-           _timer = new Timer(Check, null, TimeSpan.Zero, TimeSpan.FromSeconds(300));
-            
-
+           Check(null);
+           //_timer = new Timer(Check, null, TimeSpan.Zero, TimeSpan.FromSeconds(300));
             return Task.CompletedTask;
         }
         public async void ChangePass(Object? state)
@@ -49,77 +47,65 @@ namespace ApiMto
                 IEnumerable<Server>? srv =await scopedService.ServerApplication.Get();
                 bool deviceOn = true;
                foreach(Server sr in srv)
-                {
-                   
-                        if (sr.Brand.Name == "Hikvision")
+               {
+                    if (sr.Brand.Name == "Hikvision")
+                    {
+                        if (sr.PortAnalogo == 0)
                         {
-                            if (sr.PortAnalogo == 0)
-                            {
-                                var uri = "http://" + sr.IpAddress + "/ISAPI/ContentMgmt/InputProxy/channels/status";
-                                var node = "InputProxyChannelStatus";
-                                var tagName = "online";
-                                var tagValue = "false";
-                                await checkDeviceHik(sr, uri, node, tagName, tagValue);
-                            }
-                            if (sr.PortAnalogo > 0)
-                            {
-                                var uri = "http://" + sr.IpAddress + "/ISAPI/System/Video/inputs/channels";
-                                var node = "VideoInputChannel";
-                                var tagName = "resDesc";
-                                var tagValue = "NO VIDEO";
-                                var result=await checkDeviceHik(sr, uri, node, tagName, tagValue);
-                                deviceOn = result;
-
-                            }
-                            if (sr.PortAnalogo > 0 && sr.ChannelIP > 0 && deviceOn)
-                            {
-                                var uri = "http://" + sr.IpAddress + "/ISAPI/ContentMgmt/InputProxy/channels/status";
-                                var node = "InputProxyChannelStatus";
-                                var tagName = "online";
-                                var tagValue = "false";
-                                await checkDeviceHik(sr, uri, node, tagName, tagValue);
-                            }
-
+                            var uri = "http://" + sr.IpAddress + "/ISAPI/ContentMgmt/InputProxy/channels/status";
+                            var node = "InputProxyChannelStatus";
+                            var tagName = "online";
+                            var tagValue = "false";
+                            await checkDeviceHik(sr, uri, node, tagName, tagValue);
                         }
-                        if (sr.Brand.Name == "Vivotek")
+                        if (sr.PortAnalogo > 0)
                         {
-
-                            foreach (var cam in sr.Cameras)
-                            {
-                                var uri = "";
-                                if (cam.Brand.Name == "Vivotek")
-                                {
-                                    uri = "http://" + cam.IpAddress + "/cgi-bin/viewer/getparam.cgi?system_hostname&system_info";
-                                }
-                                if (cam.Brand.Name == "Geovision")
-                                {
-                                    uri = "http://" + cam.IpAddress + "/VideoServerSPN.xml";
-                                }
-                                var passUncryp = EncodingPass.DecryptPass(cam.Password).Split("|");
-                                var response = await conDevice(uri, cam.User, passUncryp[1]);
-                                if (response == null || !response.IsSuccessStatusCode)
-                                {
-                                    updateDevice(cam, false);
-                                    addLog(cam, "OffLine", false);
-                                    addEvent(cam, "OffLine");
-                                }
-                                else if (response.IsSuccessStatusCode)
-                                {
-                                    if (cam.Online == false)
-                                    {
-                                        updateDevice(cam, true);
-                                        addLog(cam, "OnLine", true);
-                                        deleteEvent(cam);
-                                    }
-                                }
-
-
-
-                            }
-
+                            var uri = "http://" + sr.IpAddress + "/ISAPI/System/Video/inputs/channels";
+                            var node = "VideoInputChannel";
+                            var tagName = "resDesc";
+                            var tagValue = "NO VIDEO";
+                            var result = await checkDeviceHik(sr, uri, node, tagName, tagValue);
+                            deviceOn = result;
                         }
-                    
-                   
+                        if (sr.PortAnalogo > 0 && sr.ChannelIP > 0 && deviceOn)
+                        {
+                            var uri = "http://" + sr.IpAddress + "/ISAPI/ContentMgmt/InputProxy/channels/status";
+                            var node = "InputProxyChannelStatus";
+                            var tagName = "online";
+                            var tagValue = "false";
+                            await checkDeviceHik(sr, uri, node, tagName, tagValue);
+                        }
+                    }
+                    if (sr.Brand.Name == "Dell")
+                    {
+                        foreach (var cam in sr.Cameras)
+                        {
+                            var uri = "";
+                            if (cam.Brand.Name == "Vivotek")
+                            {
+                                uri = "http://" + cam.IpAddress + "/cgi-bin/viewer/getparam.cgi?system_hostname&system_info";
+                            }
+                            if (cam.Brand.Name == "Geovision")
+                            {
+                                uri = "http://" + cam.IpAddress + "/VideoServerSPN.xml";
+                            }
+                            var passUncryp = EncodingPass.DecryptPass(cam.Password).Split("|");
+                            var response = await conDevice(uri, cam.User, passUncryp[1]);
+                            if (response == null || !response.IsSuccessStatusCode)
+                            {
+                                updateDevice(cam, false);
+                                addLog(cam, "OffLine", false);
+                            }
+                            else if (response.IsSuccessStatusCode)
+                            {
+                                if (cam.Online == false)
+                                {
+                                    updateDevice(cam, true);
+                                    addLog(cam, "OnLine", true);
+                                }
+                            }
+                        }
+                    }
                 }
             }
             Console.WriteLine("End");              
@@ -134,19 +120,18 @@ namespace ApiMto
                 var response = await conDevice(uri, sr.User,passUncryp[1]);
                 if (response == null)
                 {
-                   
+                        updateNvr(sr, false);
                     foreach (var cam in sr.Cameras)
                     {
                         updateDevice(cam, false);
                         addLog(cam, "OffLine (Error NVR)", false);
-                        addEvent(cam, "Error NVR");
                     }
                     return false;
                 }
                 else
                 {
-                   
-                   var content = new ContentResult
+                    updateNvr(sr, true);
+                    var content = new ContentResult
                     {
                         ContentType = "application/xml",
                         Content = await response.Content.ReadAsStringAsync(),
@@ -169,7 +154,6 @@ namespace ApiMto
                                     {
                                         updateDevice(cam, false);
                                         addLog(cam, "OffLine", false);
-                                        addEvent(cam, "OffLine");
                                     }
                                 }
                             }
@@ -183,7 +167,6 @@ namespace ApiMto
                                         {
                                             updateDevice(cam, true);
                                             addLog(cam, "OnLine", true);
-                                            deleteEvent(cam);
                                         }
                                     }
                                 }
@@ -209,7 +192,6 @@ namespace ApiMto
                     client = new HttpClient(new HttpClientHandler { Credentials = credCache });
                     response = await client.GetAsync(uri);
                 }
-                //response.EnsureSuccessStatusCode();
             }
             catch (Exception ex)
             {
@@ -219,11 +201,29 @@ namespace ApiMto
         }
         private async void updateDevice(Camera cam, bool online)
         {
-            using (var scope = serviceProvider.CreateScope())
+            if(cam.Online != online)
             {
-                var scopedService = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-                cam.Online = online;
-                await scopedService.CameraApplication.Update(cam.Id, cam);
+                using (var scope = serviceProvider.CreateScope())
+                {
+                    var scopedService = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+                    cam.Online = online;
+                    cam.DateIncident = DateTime.Now;
+                    await scopedService.CameraApplication.Update(cam.Id, cam);
+                }
+            }
+        }
+        private async void updateNvr(Server sr, bool online)
+        {
+            if (sr.Online != online)
+            {
+                using (var scope = serviceProvider.CreateScope())
+                {
+                    var scopedService = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+                    sr.Online = online;
+                    sr.DateIncident = DateTime.Now;
+                    await scopedService.ServerApplication.Update(sr.Id, sr);
+                    //await scopedService.CameraApplication.Update(cam.Id, cam);
+                }
             }
         }
         private async void addLog(Camera cam, string msg, bool type)
@@ -239,33 +239,7 @@ namespace ApiMto
                     if (logCamera.Type != log.Type) await scopedService.LogApplication.Add(log);
                 }
             }
-
-        }
-        private async void addEvent(Camera cam,string msg)
-        {
-            using (var scope = serviceProvider.CreateScope())
-            {
-                var scopedService = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-                Incident evento = new Incident { CameraId = cam.Id, Comment = msg };
-                var eventCam = await scopedService.IncidentApplication.FindByCam(cam.Id);
-                if (eventCam == null)
-                {
-
-                    await scopedService.IncidentApplication.Add(evento);
-                }
-            }
-
-        }
-        private async void deleteEvent(Camera cam)
-        {
-            using (var scope = serviceProvider.CreateScope())
-            {
-                var scopedService = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-                var evento = await scopedService.IncidentApplication.FindByCam(cam.Id);
-                if(evento != null) await scopedService.IncidentApplication.Delete(evento);
-            }
-
-        }
+        } 
         public Task StopAsync(CancellationToken cancellationToken)
         {
             _timer?.Change(Timeout.Infinite, 0);
